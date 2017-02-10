@@ -31,6 +31,13 @@ contract('Registry', function(accounts) {
                 });
         });
 
+        it("should store the required count", function() {
+            return instance.requiredCount()
+                .then(requiredCount => {
+                    assert.strictEqual(requiredCount.toNumber(), 2, "should have been saved");
+                });
+        });
+
         it("should not set info if only one wants", function() {
             var callData = instance.contract.setInfo.getData("hello1");
             return instance.setInfo("hello1", { from: user1 })

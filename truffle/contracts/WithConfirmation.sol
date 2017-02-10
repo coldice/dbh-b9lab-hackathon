@@ -1,7 +1,7 @@
 pragma solidity ^0.4.5;
 
 contract WithConfirmation {
-    uint requiredCount;
+    uint public requiredCount;
 
     struct Confirmation {
         uint count;
