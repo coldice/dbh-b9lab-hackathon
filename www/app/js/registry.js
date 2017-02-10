@@ -1,13 +1,13 @@
-var registry = {
+registry = {
     filter: null,
 
     /**
      * Call this when web3 is ready.
      * @returns an empty promise.
      */
-    prepare: function(web3) {
+    prepare: function(web3, Registry) {
         Registry.setProvider(web3.currentProvider);
-        return web3.net.getVersion()
+        return web3.net.getVersionPromise()
             .then(version => {
                 Registry.setNetwork(version);
             });

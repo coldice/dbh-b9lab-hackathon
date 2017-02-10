@@ -16,6 +16,6 @@ window.addEventListener('load', function() {
     });
     
     if (typeof registry != "undefined") {
-        registry.prepare(web3);
+        registry.prepare(web3, Registry);
     }
 });

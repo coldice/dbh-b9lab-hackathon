@@ -2,6 +2,10 @@ body {
     /*background: lightgrey;*/
 }
 
+.main-content {
+    padding-top: 100px;
+}
+
 .footer-styling{
     height: 60px;
     background: #4CAF50 !important;
