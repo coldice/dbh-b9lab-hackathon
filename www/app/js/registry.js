@@ -40,7 +40,8 @@ registry = {
      * the transaction is not mined yet.
      */
     setNameTo: function(newName, address) {
-        return registry.registryContract.setName.sendTransaction(newName, { from: address, gas: 500000 });
+        return registry.registryContract.deployed()
+            .setName.sendTransaction(newName, { from: address, gas: 500000 });
     },
 
     /**
