@@ -1,0 +1,9 @@
+exclude:
+- /truffle/build/.*
+- /truffle/truffle.js
+- /truffle/etherscan/.*
+- /www/node_modules/.*
+component_depth: 2
+languages:
+- solidity
+- javascript
