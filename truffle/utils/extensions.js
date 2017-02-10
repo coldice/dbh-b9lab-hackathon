@@ -78,6 +78,24 @@ module.exports = {
         };
 
         promisify(web3);
+
+        assert.isTxHash = function (txnHash, message) {
+            assert(typeof txnHash === "string",
+                'expected #{txnHash} to be a string',
+                'expected #{txnHash} to not be a string');
+            assert(txnHash.length === 66,
+                'expected #{txnHash} to be a 66 character transaction hash (0x...)',
+                'expected #{txnHash} to not be a 66 character transaction hash (0x...)');
+
+            // Convert txnHash to a number. Make sure it's not zero.
+            // Controversial: Technically there is that edge case where
+            // all zeroes could be a valid address. But: This catches all
+            // those cases where Ethereum returns 0x0000... if something fails.
+            var number = web3.toBigNumber(txnHash, 16);
+            assert(number.equals(0) === false, 
+                'expected address #{txnHash} to not be zero', 
+                'you shouldn\'t ever see this.');
+        };
     },
 
     // From https://gist.github.com/xavierlepretre/afab5a6ca65e0c52eaf902b50b807401
