@@ -1,6 +1,7 @@
 exclude:
-- /truffle/build/.*
 - /truffle/truffle.js
+- /truffle/build/.*
+- /truffle/utils/.*
 - /truffle/etherscan/.*
 - /www/node_modules/.*
 - /www/app/js/app.js
