@@ -86,10 +86,10 @@ contract('Graph', function(accounts) {
                     var key = receiptAndKey[1];
                     assert.strictEqual(receivedEvent.args.key, key, "should be the key");
                     return Promise.all([
-                             instance.directedLinks(user1),
-                             instance.confirmations(key),
-                             instance.getConfirmationOf(key, user1),
-                             instance.getConfirmationOf(key, user2)
+                            instance.directedLinks(user1),
+                            instance.confirmations(key),
+                            instance.getConfirmationOf(key, user1),
+                            instance.getConfirmationOf(key, user2)
                         ]);
                 })
                 .then(infos => {
@@ -116,10 +116,10 @@ contract('Graph', function(accounts) {
                     var key = receiptAndKey[1];
                     assert.strictEqual(receivedEvent.args.key, key, "should be the key");
                     return Promise.all([
-                             instance.directedLinks(user1),
-                             instance.confirmations(key),
-                             instance.getConfirmationOf(key, user1),
-                             instance.getConfirmationOf(key, user2)
+                            instance.directedLinks(user1),
+                            instance.confirmations(key),
+                            instance.getConfirmationOf(key, user1),
+                            instance.getConfirmationOf(key, user2)
                         ]);
                 })
                 .then(infos => {
@@ -220,6 +220,95 @@ contract('Graph', function(accounts) {
                 .then(isConfirmed => {
                     assert.isTrue(isConfirmed, "should have been marked");
                 })
+        });
+
+    });
+
+    describe("create symmetrical bidirectional link", function() {
+
+        var instance, keyLeft, keyRight;
+
+        beforeEach("should create a brand new graph with a full link", function() {
+            return Graph.new({ from: user1 })
+                .then(created => {
+                    instance = created;
+                    return instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user1 });
+                })
+                .then(txHash => web3.eth.getTransactionReceiptMined(txHash))
+                .then(receipt => {
+                    var receivedEvent = instance.OnConfirmationRequired().formatter(receipt.logs[0]);
+                    keyLeft = receivedEvent.args.key;
+                    return instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user2 });
+                })
+                .then(txHash => web3.eth.getTransactionReceiptMined(txHash));
+        });
+
+        it("should wait for a confirmation when submitting the other direction", function() {
+            var callData = instance.contract.submitLink.getData(user2, user1, 1000, 1000000, "somewhere");
+            return instance.submitLink.call(user2, user1, 1000, 1000000, "somewhere", { from: user1 })
+                .then(successful => {
+                    assert.isFalse(successful, "should not pass because it is the first");
+                    return instance.submitLink(user2, user1, 1000, 1000000, "somewhere", { from: user1 });
+                })
+                .then(txHash => Promise.all([
+                        web3.eth.getTransactionReceiptMined(txHash),
+                        instance.calculateKey(callData)
+                    ]))
+                .then(receiptAndKey => {
+                    var receivedEvent = instance.OnConfirmationRequired().formatter(receiptAndKey[0].logs[0]);
+                    keyRight = receiptAndKey[1];
+                    assert.strictEqual(receivedEvent.args.key, keyRight, "should be the key");
+                    return Promise.all([
+                            instance.directedLinks(user1),
+                            instance.directedLinks(user2),
+                            instance.confirmations(keyRight),
+                            instance.getConfirmationOf(keyRight, user1),
+                            instance.getConfirmationOf(keyRight, user2)
+                        ]);
+                })
+                .then(infos => {
+                    assert.strictEqual(infos[0][0], user2, "should have set link");
+                    assert.strictEqual(infos[1][0], "0x0000000000000000000000000000000000000000", "should not set link");
+                    assert.strictEqual(infos[2].toNumber(), 1, "should have 1 confirmed count");
+                    assert.isTrue(infos[3], "should be confirmed");
+                    assert.isFalse(infos[4], "should not be confirmed");
+                });
+        });
+
+        it("should make a link in the other direction when confirmed", function() {
+            var callData = instance.contract.submitLink.getData(user2, user1, 1000, 1000000, "somewhere");
+            return instance.submitLink(user2, user1, 1000, 1000000, "somewhere", { from: user1 })
+                .then(txHash => Promise.all([
+                        web3.eth.getTransactionReceiptMined(txHash),
+                        instance.calculateKey(callData)
+                    ]))
+                .then(receiptAndKey => {
+                    keyRight = receiptAndKey[1];
+                    return instance.submitLink(user2, user1, 1000, 1000000, "somewhere", { from: user2 });
+                })
+                .then(txHash => web3.eth.getTransactionReceiptMined(txHash))
+                .then(receipt => {
+                    var receivedEvent = instance.LogLinkAdded().formatter(receipt.logs[0]);
+                    assert.strictEqual(receivedEvent.args.from, user2, "should be the from");
+                    assert.strictEqual(receivedEvent.args.to, user1, "should be the to");
+                    assert.strictEqual(receivedEvent.args.loss.toNumber(), 1000, "should be the loss");
+                    assert.strictEqual(receivedEvent.args.throughput.toNumber(), 1000000, "should be the throughput");
+                    assert.strictEqual(receivedEvent.args.location, "somewhere", "should be the location");
+                    return Promise.all([
+                            instance.directedLinks(user1),
+                            instance.directedLinks(user2),
+                            instance.confirmations(keyRight),
+                            instance.getConfirmationOf(keyRight, user1),
+                            instance.getConfirmationOf(keyRight, user2)
+                        ]);
+                })
+                .then(infos => {
+                    assert.strictEqual(infos[0][0], user2, "should have set link");
+                    assert.strictEqual(infos[1][0], user1, "should not set link");
+                    assert.strictEqual(infos[2].toNumber(), 2, "should have both confirmed count");
+                    assert.isTrue(infos[3], "should be confirmed");
+                    assert.isTrue(infos[4], "should be confirmed");
+                });
         });
 
     });
