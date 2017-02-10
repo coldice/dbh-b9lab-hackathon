@@ -39,19 +39,20 @@ describe("basic calls", function() {
 	           		},
 	           		LogNameChanged: function(byWhat, json) {
 	           			return {
-	           				watch: function(callback) {}
+	           				watch: function(callback) {},
+	           				stopWatching: function() {}
 	           			}
-	           		}
-	            }
+	           		},
+					setName: {
+           				sendTransaction: function(newName, json) {
+           					return new Promise(function (resolve, reject) {
+           						return resolve("txHash");
+           					});
+		           		}
+	    	        }
+	    	    }
 	        },
-           	setName: {
-           		sendTransaction: function(newName, json) {
-           			return new Promise(function (resolve, reject) {
-           				return resolve("txHash");
-           			});
-           		}
-           	},
-           	filter: null
+          	filter: null
         };
 	
     
@@ -59,11 +60,9 @@ describe("basic calls", function() {
         Registry.setProvider = chai.spy(Registry.setProvider);
         Registry.setNetwork = chai.spy(Registry.setNetwork);
         Registry.deployed = chai.spy(Registry.deployed);
-        Registry.setName.sendTransaction = chai.spy(Registry.setName.sendTransaction);
         expect(web3.version.getNetworkPromise).to.be.spy;
         expect(Registry.setProvider).to.be.spy;
         expect(Registry.setNetwork).to.be.spy;
-        expect(Registry.setName.sendTransaction).to.be.spy;
     });
 
     it("prepare called sub-functions as expected", function() {
@@ -89,7 +88,7 @@ describe("basic calls", function() {
     		.then(() => {return registry.getAddressOf("testName")})
     		.then(function(address) {
     			expect(address).to.equal("0x0");
-    			expect(Registry.deployed).to.have.been.called.once;
+    			expect(Registry.deployed).to.have.been.called.once();
     		});
     });
 
@@ -105,12 +104,13 @@ describe("basic calls", function() {
     	registry.prepare(web3, Registry)
     		.then(() => {return registry.listenToUpdates(() => {}, {} )})
     		.then(() => {
-    			expect(Registry.deployed).to.have.been.called.once;
+    			expect(Registry.deployed).to.have.been.called.once();
     		});
     	//TODO : complete it with stuff 
     });	
 
     it("stopListeningToUpdates called sub-functions as expected", function() {
+
 	});
 
 
