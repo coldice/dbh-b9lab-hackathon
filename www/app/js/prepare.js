@@ -18,6 +18,9 @@ window.addEventListener('load', function() {
     if (typeof registry != "undefined") {
         registry.prepare(web3, Registry);
     }
+    if (typeof graph != "undefined") {
+        graph.prepare(web3, Graph);
+    }
 
     var event = new CustomEvent("web3Ready", {});
     window.dispatchEvent(event);
