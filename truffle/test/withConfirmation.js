@@ -51,10 +51,10 @@ contract('Registry', function(accounts) {
                     var key = receiptAndKey[1];
                     assert.strictEqual(receivedEvent.args.key, key, "should be the key");
                     return Promise.all([
-                             instance.info(),
-                             instance.confirmations(key),
-                             instance.getConfirmationOf(key, user1),
-                             instance.getConfirmationOf(key, user2)
+                            instance.info(),
+                            instance.confirmations(key),
+                            instance.getConfirmationOf(key, user1),
+                            instance.getConfirmationOf(key, user2)
                         ]);
                 })
                 .then(infos => {
