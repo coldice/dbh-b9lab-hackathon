@@ -67,5 +67,3 @@ function updateUi() {
         })
 }
 //lbl_account
-
-window.addEventListener('web3_connected', f => {updateUi()});
