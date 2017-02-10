@@ -54,34 +54,34 @@ contract('Graph', function(accounts) {
 
         it("should fail if you are not from or to", function() {
             return Extensions.expectedExceptionPromise(
-                () => instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user3, gas: 3000000 }),
+                () => instance.submitLink(user1, user2, 1000, 1000000, { from: user3, gas: 3000000 }),
                 3000000);
         });
 
         it("should fail if from is 0", function() {
             return Extensions.expectedExceptionPromise(
-                () => instance.submitLink(0, user2, 1000, 1000000, "somewhere", { from: user2, gas: 3000000 }),
+                () => instance.submitLink(0, user2, 1000, 1000000, { from: user2, gas: 3000000 }),
                 3000000);
         });
 
         it("should fail if to is 0", function() {
             return Extensions.expectedExceptionPromise(
-                () => instance.submitLink(user1, 0, 1000, 1000000, "somewhere", { from: user1, gas: 3000000 }),
+                () => instance.submitLink(user1, 0, 1000, 1000000, { from: user1, gas: 3000000 }),
                 3000000);
         });
 
         it("should fail if from equals to", function() {
             return Extensions.expectedExceptionPromise(
-                () => instance.submitLink(user1, user1, 1000, 1000000, "somewhere", { from: user1, gas: 3000000 }),
+                () => instance.submitLink(user1, user1, 1000, 1000000, { from: user1, gas: 3000000 }),
                 3000000);
         });
 
         it("should wait for a confirmation when submitting a link as from", function() {
-            var callData = instance.contract.submitLink.getData(user1, user2, 1000, 1000000, "somewhere");
-            return instance.submitLink.call(user1, user2, 1000, 1000000, "somewhere", { from: user1 })
+            var callData = instance.contract.submitLink.getData(user1, user2, 1000, 1000000);
+            return instance.submitLink.call(user1, user2, 1000, 1000000, { from: user1 })
                 .then(successful => {
                     assert.isFalse(successful, "should not pass because it is the first");
-                    return instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user1 });
+                    return instance.submitLink(user1, user2, 1000, 1000000, { from: user1 });
                 })
                 .then(txHash => Promise.all([
                         web3.eth.getTransactionReceiptMined(txHash),
@@ -107,11 +107,11 @@ contract('Graph', function(accounts) {
         });
 
         it("should wait for a confirmation when submitting a link as to", function() {
-            var callData = instance.contract.submitLink.getData(user1, user2, 1000, 1000000, "somewhere");
-            return instance.submitLink.call(user1, user2, 1000, 1000000, "somewhere", { from: user2 })
+            var callData = instance.contract.submitLink.getData(user1, user2, 1000, 1000000);
+            return instance.submitLink.call(user1, user2, 1000, 1000000, { from: user2 })
                 .then(successful => {
                     assert.isFalse(successful, "should not pass because it is the first");
-                    return instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user2 });
+                    return instance.submitLink(user1, user2, 1000, 1000000, { from: user2 });
                 })
                 .then(txHash => Promise.all([
                         web3.eth.getTransactionReceiptMined(txHash),
@@ -146,7 +146,7 @@ contract('Graph', function(accounts) {
             return Graph.new({ from: user1 })
                 .then(created => {
                     instance = created;
-                    return instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user1 });
+                    return instance.submitLink(user1, user2, 1000, 1000000, { from: user1 });
                 })
                 .then(txHash => web3.eth.getTransactionReceiptMined(txHash))
                 .then(receipt => {
@@ -157,15 +157,15 @@ contract('Graph', function(accounts) {
 
         it("should fail if submit with user1 again", function() {
             return Extensions.expectedExceptionPromise(
-                () => instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user1, gas: 3000000 }),
+                () => instance.submitLink(user1, user2, 1000, 1000000, { from: user1, gas: 3000000 }),
                 3000000);
         });
 
         it("should create link with user2", function() {
-            return instance.submitLink.call(user1, user2, 1000, 1000000, "somewhere", { from: user2 })
+            return instance.submitLink.call(user1, user2, 1000, 1000000, { from: user2 })
                 .then(successful => {
                     assert.isTrue(successful, "should be possible to add link");
-                    return instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user2 });
+                    return instance.submitLink(user1, user2, 1000, 1000000, { from: user2 });
                 })
                 .then(txHash => web3.eth.getTransactionReceiptMined(txHash))
                 .then(receipt => {
@@ -174,7 +174,6 @@ contract('Graph', function(accounts) {
                     assert.strictEqual(receivedEvent.args.to, user2, "should be the to");
                     assert.strictEqual(receivedEvent.args.loss.toNumber(), 1000, "should be the loss");
                     assert.strictEqual(receivedEvent.args.throughput.toNumber(), 1000000, "should be the throughput");
-                    assert.strictEqual(receivedEvent.args.location, "somewhere", "should be the location");
                     return instance.getConfirmationOf(key1, user2);
                 })
                 .then(isConfirmed => {
@@ -192,7 +191,7 @@ contract('Graph', function(accounts) {
             return Graph.new({ from: user1 })
                 .then(created => {
                     instance = created;
-                    return instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user2 });
+                    return instance.submitLink(user1, user2, 1000, 1000000, { from: user2 });
                 })
                 .then(txHash => web3.eth.getTransactionReceiptMined(txHash))
                 .then(receipt => {
@@ -203,15 +202,15 @@ contract('Graph', function(accounts) {
 
         it("should fail if submit with user2 again", function() {
             return Extensions.expectedExceptionPromise(
-                () => instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user2, gas: 3000000 }),
+                () => instance.submitLink(user1, user2, 1000, 1000000, { from: user2, gas: 3000000 }),
                 3000000);
         });
 
         it("should create link with user1", function() {
-            return instance.submitLink.call(user1, user2, 1000, 1000000, "somewhere", { from: user1 })
+            return instance.submitLink.call(user1, user2, 1000, 1000000, { from: user1 })
                 .then(successful => {
                     assert.isTrue(successful, "should be possible to add link");
-                    return instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user1 });
+                    return instance.submitLink(user1, user2, 1000, 1000000, { from: user1 });
                 })
                 .then(txHash => web3.eth.getTransactionReceiptMined(txHash))
                 .then(receipt => {
@@ -220,7 +219,6 @@ contract('Graph', function(accounts) {
                     assert.strictEqual(receivedEvent.args.to, user2, "should be the to");
                     assert.strictEqual(receivedEvent.args.loss.toNumber(), 1000, "should be the loss");
                     assert.strictEqual(receivedEvent.args.throughput.toNumber(), 1000000, "should be the throughput");
-                    assert.strictEqual(receivedEvent.args.location, "somewhere", "should be the location");
                     return instance.getConfirmationOf(key1, user1);
                 })
                 .then(isConfirmed => {
@@ -238,23 +236,23 @@ contract('Graph', function(accounts) {
             return Graph.new({ from: user1 })
                 .then(created => {
                     instance = created;
-                    return instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user1 });
+                    return instance.submitLink(user1, user2, 1000, 1000000, { from: user1 });
                 })
                 .then(txHash => web3.eth.getTransactionReceiptMined(txHash))
                 .then(receipt => {
                     var receivedEvent = instance.OnConfirmationRequired().formatter(receipt.logs[0]);
                     keyLeft = receivedEvent.args.key;
-                    return instance.submitLink(user1, user2, 1000, 1000000, "somewhere", { from: user2 });
+                    return instance.submitLink(user1, user2, 1000, 1000000, { from: user2 });
                 })
                 .then(txHash => web3.eth.getTransactionReceiptMined(txHash));
         });
 
         it("should wait for a confirmation when submitting the other direction", function() {
-            var callData = instance.contract.submitLink.getData(user2, user1, 1000, 1000000, "somewhere");
-            return instance.submitLink.call(user2, user1, 1000, 1000000, "somewhere", { from: user1 })
+            var callData = instance.contract.submitLink.getData(user2, user1, 1000, 1000000);
+            return instance.submitLink.call(user2, user1, 1000, 1000000, { from: user1 })
                 .then(successful => {
                     assert.isFalse(successful, "should not pass because it is the first");
-                    return instance.submitLink(user2, user1, 1000, 1000000, "somewhere", { from: user1 });
+                    return instance.submitLink(user2, user1, 1000, 1000000, { from: user1 });
                 })
                 .then(txHash => Promise.all([
                         web3.eth.getTransactionReceiptMined(txHash),
@@ -282,15 +280,15 @@ contract('Graph', function(accounts) {
         });
 
         it("should make a link in the other direction when confirmed", function() {
-            var callData = instance.contract.submitLink.getData(user2, user1, 1000, 1000000, "somewhere");
-            return instance.submitLink(user2, user1, 1000, 1000000, "somewhere", { from: user1 })
+            var callData = instance.contract.submitLink.getData(user2, user1, 1000, 1000000);
+            return instance.submitLink(user2, user1, 1000, 1000000, { from: user1 })
                 .then(txHash => Promise.all([
                         web3.eth.getTransactionReceiptMined(txHash),
                         instance.calculateKey(callData)
                     ]))
                 .then(receiptAndKey => {
                     keyRight = receiptAndKey[1];
-                    return instance.submitLink(user2, user1, 1000, 1000000, "somewhere", { from: user2 });
+                    return instance.submitLink(user2, user1, 1000, 1000000, { from: user2 });
                 })
                 .then(txHash => web3.eth.getTransactionReceiptMined(txHash))
                 .then(receipt => {
@@ -299,7 +297,6 @@ contract('Graph', function(accounts) {
                     assert.strictEqual(receivedEvent.args.to, user1, "should be the to");
                     assert.strictEqual(receivedEvent.args.loss.toNumber(), 1000, "should be the loss");
                     assert.strictEqual(receivedEvent.args.throughput.toNumber(), 1000000, "should be the throughput");
-                    assert.strictEqual(receivedEvent.args.location, "somewhere", "should be the location");
                     return Promise.all([
                             instance.directedLinks(user1),
                             instance.directedLinks(user2),

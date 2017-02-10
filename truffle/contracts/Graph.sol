@@ -7,7 +7,6 @@ contract Graph is WithConfirmation {
         address to;
         uint loss; // The unit is such that 1% is encoded as 1000
         uint throughput; // The unit is microWatt.
-        string location;
     }
     
     /**
@@ -19,8 +18,7 @@ contract Graph is WithConfirmation {
         address indexed from,
         address indexed to,
         uint loss,
-        uint throughput,
-        string location);
+        uint throughput);
 
     function Graph()
         WithConfirmation(2) {
@@ -41,17 +39,16 @@ contract Graph is WithConfirmation {
             || msg.sender == to;
     }
 
-    function submitLink(address from, address to, uint loss, uint throughput, string location)
+    function submitLink(address from, address to, uint loss, uint throughput)
         yourLinkOnly(from, to)
         isConfirmed
         returns (bool successful) {
         directedLinks[from] = Link({
             to: to,
             loss: loss,
-            throughput: throughput,
-            location: location
+            throughput: throughput
         });
-        LogLinkAdded(from, to, loss, throughput, location);
+        LogLinkAdded(from, to, loss, throughput);
         return true;
     }
 }
