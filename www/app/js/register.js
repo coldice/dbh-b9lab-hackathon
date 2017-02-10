@@ -1,20 +1,15 @@
-function isNameTaken() {
+function isNameTaken(name) {
     return web3.eth.getFirstAccountPromise()
-        .catch(error => {
-            console.error(error);
-            // Show the UI that there is no account
-        })
         .then(account => {
-            return registry.getAddressOf(n_name)
-                .catch(error => {
-                    console.error(error);
-                    // Show the UI that there is a problem connecting the contract.
-                })
+            return registry.getAddressOf(name)
                 .then(whoElse => {
-                    if (whoElse != account) {
-                        // Show the UI that the name is already taken.
+                    if (whoElse == "0x0000000000000000000000000000000000000000"
+                        || whoElse == "0x" || whoElse == 0) {
+                        // That's fine, it is available
+                    } else if (whoElse != account) {
+                        throw "Name already taken";
                     } else if (whoElse == account) {
-                        // Show the UI that the name is already set.
+                        throw "Name already set";
                     } else {
                         // That's fine should be possible to set it.
                     }
@@ -24,49 +19,73 @@ function isNameTaken() {
 
 function loadActions() {
     $("#btn_submit_register").click(function() {
-        var n_name = $("#txt_name").val();
-        var n_location = $("#txt_location").val();
-
-    return web3.eth.getFirstAccountPromise()
-        .catch(error => {
-            console.error(error);
-            // Show the UI that there is no account
-        })
-        .then(account => registry.setMyName(n_name, account))
-        .then(txHash => {
-            // Show the UI that transaction is processing
-            return web3.eth.getTransactionReceiptMined(txHash);
-        })
-        .catch(error => {
-            console.error(error);
-            // Show the UI that there is a problem with setting the name.
-            // Did you check that the name is taken or not?
-        })
-        .then(receipt => {
-            // Show the UI that it went through
-        });
+        var pickedName = $("#txt_name").val();
+        var pickedLocation = $("#txt_location").val();
+        $("#lbl_error").hide();
+        return isNameTaken(pickedName)
+            .then(() => web3.eth.getFirstAccountPromise())
+            .then(account => {
+                $("#lbl_processing").show();
+                return registry.setNameTo(pickedName, account);
+            })
+            .then(txHash => {
+                return web3.eth.getTransactionReceiptMined(txHash);
+            })
+            .then(receipt => {
+                $("#lbl_processing").hide();
+                $("#lbl_name").html(pickedName);
+            })
+            .catch(error => {
+                console.error(error);
+                $("#lbl_processing").hide();
+                var errorMessage = "";
+                if (error == "No account found") {
+                    errorMessage = "There is no account";
+                } else if(error == "Name already taken") {
+                    errorMessage = "Name already taken by another: " + pickedName;
+                } else if(error == "Name already set") {
+                    errorMessage = "Your address is already set to this name";
+                } else {
+                    errorMessage = "Failed to set the name";
+                }
+                $("#lbl_error").html(errorMessage).show();
+                // Did you check that the name is taken or not?
+            });
     });
 }
 
 function updateUi() {
-    return web3.eth.getFirstAccountPromise()
+    return web3.eth.getAccountsPromise()
+        .then(accounts => {
+            if (accounts.length > 0) {
+                return accounts[0];
+            }
+            throw "No account found";
+        })
         .then(account => {
             $("#lbl_account").html(account);
             return registry.getNameOf(account);
         })
-        .catch(error => {
-            console.error(error);
-            // Show the UI that there is no account. No need to alert.
-        })
         .then(name => {
-            // Show the UI the current name
+            $("#lbl_name").html(web3.toUtf8(name));
         })
         .catch(error => {
             console.error(error);
-            // Show the UI that there is an error to get name.
+            var errorMessage = "";
+            if (error == "No account found") {
+                errorMessage = "There is no account";
+            } else {
+                errorMessage = "Failed to fetch your current name";
+            }
+            $("#lbl_error").html(errorMessage).show();
         })
 }
 //lbl_account
 
 // add an appropriate event listener
-window.addEventListener("web3Ready", updateUi);
+window.addEventListener(
+    "web3Ready",
+    () => {
+        updateUi();
+        loadActions();
+    });

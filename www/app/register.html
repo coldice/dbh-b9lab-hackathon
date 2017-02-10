@@ -29,12 +29,15 @@
     
     <div class="container main-content">
         <form class="form-signin">
-            <h2 class="form-signin-heading">Account:<span id="lbl_account">xxx</span></h2>
+            <h2 class="form-signin-heading">Account:<span id="lbl_account"></span></h2>
+            <h2>Your current name:<span id="lbl_name"></span></h2>
             
             <input type="name" id="txt_name" class="form-control" placeholder="Name">
             <input type="location" id="txt_location" class="form-control" placeholder="Location">
             
-            <button id="btn_submit_register" class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+            <button id="btn_submit_register" class="btn btn-lg btn-primary btn-block" type="button">Submit</button>
+            <p style="display:none;" id="lbl_error">xxx</p>
+            <p style="display:none;" id="lbl_processing">Processing</p>
         </form>
     </div>
     <!-- /container -->
