@@ -70,6 +70,12 @@ contract('Graph', function(accounts) {
                 3000000);
         });
 
+        it("should fail if from equals to", function() {
+            return Extensions.expectedExceptionPromise(
+                () => instance.submitLink(user1, user1, 1000, 1000000, "somewhere", { from: user1, gas: 3000000 }),
+                3000000);
+        });
+
         it("should wait for a confirmation when submitting a link as from", function() {
             var callData = instance.contract.submitLink.getData(user1, user2, 1000, 1000000, "somewhere");
             return instance.submitLink.call(user1, user2, 1000, 1000000, "somewhere", { from: user1 })
