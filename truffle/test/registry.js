@@ -139,6 +139,9 @@ contract('Registry', function(accounts) {
         });
 
         it("should refuse to overwrite the name if someone else", function() {
+            return Extensions.expectedExceptionPromise(
+                () => instance.setName("userName1", {from: user2}), 
+                3000000, 3000000);
         });
 
     });
