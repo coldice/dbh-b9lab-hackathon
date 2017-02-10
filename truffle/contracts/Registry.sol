@@ -1,8 +1,8 @@
 pragma solidity ^0.4.5;
 
 contract Registry {
-	mapping (address => bytes32) names;
-	mapping (bytes32 => address) addresses;
+	mapping (address => bytes32) public names;
+	mapping (bytes32 => address) public addresses;
 
 	event LogNameChanged(address indexed who, bytes32 indexed name);
 
