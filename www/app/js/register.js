@@ -45,7 +45,7 @@ function loadActions() {
         .then(receipt => {
             // Show the UI that it went through
         });
-    }
+    });
 }
 
 function updateUi() {
@@ -67,3 +67,5 @@ function updateUi() {
         })
 }
 //lbl_account
+
+window.addEventListener('web3_connected', f => {updateUi()});
