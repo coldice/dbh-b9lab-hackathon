@@ -1,15 +1,18 @@
 registry = {
     filter: null,
+    registryContract: null,
 
     /**
      * Call this when web3 is ready.
+     * pass along the RegistryContract EtherPudding.
      * @returns an empty promise.
      */
-    prepare: function(web3, Registry) {
-        Registry.setProvider(web3.currentProvider);
+    prepare: function(web3, registryContract) {
+        registry.registryContract = registryContract;
+        registryContract.setProvider(web3.currentProvider);
         return web3.version.getNetworkPromise()
             .then(version => {
-                Registry.setNetwork(version);
+                registryContract.setNetwork(version);
             });
     },
 
@@ -18,7 +21,7 @@ registry = {
      * returns a promise with the name.
      */
     getNameOf: function(address) {
-        return Registry.deployed()
+        return registry.registryContract.deployed()
             .names(address);
     },
 
@@ -27,7 +30,7 @@ registry = {
      * returns a promise with the address.
      */
     getAddressOf: function(name) {
-        return Registry.deployed()
+        return registry.registryContract.deployed()
             .addresses(name);
     },
 
@@ -37,7 +40,7 @@ registry = {
      * the transaction is not mined yet.
      */
     setNameTo: function(newName, address) {
-        return Registry.setName.sendTransaction(newName, { from: address, gas: 500000 });
+        return registry.registryContract.setName.sendTransaction(newName, { from: address, gas: 500000 });
     },
 
     /**
@@ -57,7 +60,7 @@ registry = {
             byWhat = {};
         }
         if (registry.filter == null) {
-            registry.filter = Registry.deployed().LogNameChanged(byWhat, { fromBlock: 0 });
+            registry.filter = registry.registryContract.deployed().LogNameChanged(byWhat, { fromBlock: 0 });
         }
         registry.filter.watch(callback);
     },
