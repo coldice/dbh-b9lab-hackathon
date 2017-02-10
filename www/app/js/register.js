@@ -5,4 +5,8 @@ function loadActions() {
     }
 }
 
+function updateUi() {
+    var s_account = "ACCOUNT";
+    $("#lbl_account").html(s_account);
+}
 //lbl_account
