@@ -146,9 +146,40 @@ contract('Registry', function(accounts) {
     describe("erase possibility", function() {
 
         beforeEach("should create a brand new registry with 2 names in already", function() {
+            return Registry.new()
+                .then(created => {
+                    instance = created;
+                    instance.setName("userName1", {from: user1});
+                    instance.setName("userName2", {from: user2});
+                });
         });
 
         it("should be able to possible for both to set name back to empty string", function() {
+            return Promise.all([
+                instance.setName("", { from: user1 }),
+                instance.setName("", { from: user2 })
+                ])
+                .then(txHashes => {
+                    return web3.eth.getTransactionReceiptMined(txHashes);
+                })
+                .then((receipts) => {
+                    var receivedEvent1 = instance.LogNameChanged().formatter(receipts[0].logs[0]);
+                    var receivedEvent2 = instance.LogNameChanged().formatter(receipts[1].logs[0]);
+                    assert.strictEqual(receivedEvent1.args.who, user1, "should be sender 1");
+                    assert.strictEqual(receivedEvent2.args.who, user2, "should be sender 2");
+                    assert.strictEqual(web3.toUtf8(receivedEvent1.args.name), "", "should be the empty string");
+                    assert.strictEqual(web3.toUtf8(receivedEvent2.args.name), "", "should be the empty string");
+                    return Promise.all([
+                            instance.names(user1),
+                            instance.names(user2),
+                            instance.addresses("")
+                        ]);
+                })
+                .then(results => {
+                    assert.strictEqual(web3.toUtf8(results[0]), "", "should save name of user 1");
+                    assert.strictEqual(web3.toUtf8(results[1]), "", "should save name of user 2");
+                    assert.strictEqual(results[2], "0x0000000000000000000000000000000000000000", "should keep the 0 at 0");
+                });
         });
 
     });
