@@ -5671,11 +5671,18 @@ var SolidityEvent = require("web3/lib/web3/event.js");
   };
 
   Contract.all_networks = {
-  "default": {
+  "3": {
     "abi": [],
     "unlinked_binary": "0x6060604052346000575b60358060166000396000f30060606040525b60005600a165627a7a72305820d2c4dcdf2f0c91081c1e76973f801816ef250432979f9c06a34679aca2f46c430029",
     "events": {},
-    "updated_at": 1486739960209
+    "updated_at": 1486741064411,
+    "links": {}
+  },
+  "default": {
+    "abi": [],
+    "unlinked_binary": "0x6060604052346000575b60358060166000396000f30060606040525b60005600a165627a7a72305820565d80f684df7dca12126372305c1b179f0fa9196bb85b96b587d4651dd3ee4b0029",
+    "events": {},
+    "updated_at": 1486741301108
   }
 };
 
@@ -6154,6 +6161,72 @@ var SolidityEvent = require("web3/lib/web3/event.js");
   };
 
   Contract.all_networks = {
+  "3": {
+    "abi": [
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "new_address",
+            "type": "address"
+          }
+        ],
+        "name": "upgrade",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "last_completed_migration",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "completed",
+            "type": "uint256"
+          }
+        ],
+        "name": "setCompleted",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "payable": false,
+        "type": "constructor"
+      }
+    ],
+    "unlinked_binary": "0x606060405234610000575b60008054600160a060020a03191633600160a060020a03161790555b5b610190806100366000396000f300606060405263ffffffff60e060020a6000350416630900f0108114610045578063445df0ac146100605780638da5cb5b1461007f578063fdacd576146100a8575b610000565b346100005761005e600160a060020a03600435166100ba565b005b346100005761006d61012d565b60408051918252519081900360200190f35b346100005761008c610133565b60408051600160a060020a039092168252519081900360200190f35b346100005761005e600435610142565b005b6000805433600160a060020a03908116911614156101275781905080600160a060020a031663fdacd5766001546040518263ffffffff1660e060020a02815260040180828152602001915050600060405180830381600087803b156100005760325a03f115610000575050505b5b5b5050565b60015481565b600054600160a060020a031681565b60005433600160a060020a039081169116141561015f5760018190555b5b5b505600a165627a7a7230582092c3f11ef5cd15bcb07a25c019cda696534e66505ca0acb566b0b4e8741267b20029",
+    "events": {},
+    "updated_at": 1486741064414,
+    "address": "0x515d2475169c5b1c507fa067139c63dcb5f28e44",
+    "links": {}
+  },
   "default": {
     "abi": [
       {
@@ -6697,6 +6770,104 @@ var SolidityEvent = require("web3/lib/web3/event.js");
   };
 
   Contract.all_networks = {
+  "3": {
+    "abi": [
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "name",
+            "type": "bytes32"
+          }
+        ],
+        "name": "setName",
+        "outputs": [
+          {
+            "name": "successful",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "names",
+        "outputs": [
+          {
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "name": "addresses",
+        "outputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "who",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "name",
+            "type": "bytes32"
+          }
+        ],
+        "name": "LogNameChanged",
+        "type": "event"
+      }
+    ],
+    "unlinked_binary": "0x606060405234610000575b610258806100196000396000f300606060405263ffffffff60e060020a6000350416635ac801fe811461003a5780635cf3d3461461005e578063699f200f14610089575b610000565b346100005761004a6004356100b5565b604080519115158252519081900360200190f35b3461000057610077600160a060020a03600435166101ff565b60408051918252519081900360200190f35b3461000057610099600435610211565b60408051600160a060020a039092168252519081900360200190f35b600081158015906100dc5750600082815260016020526040902054600160a060020a031615155b8015610103575060008281526001602052604090205433600160a060020a03908116911614155b1561010d57610000565b600160a060020a0333166000908152602081905260409020541561016a57600160a060020a03331660009081526020818152604080832054835260019091529020805473ffffffffffffffffffffffffffffffffffffffff191690555b600160a060020a033316600090815260208190526040902082905581156101c0576000828152600160205260409020805473ffffffffffffffffffffffffffffffffffffffff191633600160a060020a03161790555b6040518290600160a060020a033316907f6b5915514d52002b65156a0b68d71514722d248d35ed7777aa30fd5985f442c290600090a35060015b919050565b60006020819052908152604090205481565b600160205260009081526040902054600160a060020a0316815600a165627a7a72305820e1eeed6764bb5f8c293c1ca53adc6bd0e3a3f5f0bd1f12cc8280723d42e68b430029",
+    "events": {
+      "0x6b5915514d52002b65156a0b68d71514722d248d35ed7777aa30fd5985f442c2": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "who",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "name",
+            "type": "bytes32"
+          }
+        ],
+        "name": "LogNameChanged",
+        "type": "event"
+      }
+    },
+    "updated_at": 1486741064419,
+    "links": {},
+    "address": "0xcdff7c29d41a6b5ee2ffb083866e84b8f5a3a919"
+  },
   "default": {
     "abi": [
       {
@@ -7272,6 +7443,107 @@ var SolidityEvent = require("web3/lib/web3/event.js");
   };
 
   Contract.all_networks = {
+  "3": {
+    "abi": [
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "key",
+            "type": "bytes32"
+          },
+          {
+            "name": "user",
+            "type": "address"
+          }
+        ],
+        "name": "getConfirmationOf",
+        "outputs": [
+          {
+            "name": "confirmed",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "data",
+            "type": "bytes"
+          }
+        ],
+        "name": "calculateKey",
+        "outputs": [
+          {
+            "name": "key",
+            "type": "bytes32"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "name": "confirmations",
+        "outputs": [
+          {
+            "name": "count",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "name": "_requiredCount",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "type": "constructor"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "key",
+            "type": "bytes32"
+          }
+        ],
+        "name": "OnConfirmationRequired",
+        "type": "event"
+      }
+    ],
+    "unlinked_binary": "0x6060604052346100005760405160208061021183398101604052515b60008190555b505b6101df806100326000396000f300606060405263ffffffff60e060020a600035041663613bf18a811461003a578063a495b15314610077578063ec95bfe7146100dc575b610000565b346100005761006360043573ffffffffffffffffffffffffffffffffffffffff602435166100fe565b604080519115158252519081900360200190f35b34610000576100ca600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284375094965061013a95505050505050565b60408051918252519081900360200190f35b34610000576100ca6004356101a1565b60408051918252519081900360200190f35b600082815260016020818152604080842073ffffffffffffffffffffffffffffffffffffffff86168552909201905290205460ff165b92915050565b6000816040518082805190602001908083835b6020831061016c5780518252601f19909201916020918201910161014d565b6001836020036101000a038019825116818451168082178552505050505050905001915050604051809103902090505b919050565b600160205260009081526040902054815600a165627a7a72305820951b0a6fbd3d842466ecd5316cd4e2e38f842da6dc8119257179167efab4f7990029",
+    "events": {
+      "0x4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "key",
+            "type": "bytes32"
+          }
+        ],
+        "name": "OnConfirmationRequired",
+        "type": "event"
+      }
+    },
+    "updated_at": 1486741064423,
+    "links": {}
+  },
   "default": {
     "abi": [
       {
@@ -7849,6 +8121,133 @@ var SolidityEvent = require("web3/lib/web3/event.js");
   };
 
   Contract.all_networks = {
+  "3": {
+    "abi": [
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "info",
+        "outputs": [
+          {
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "key",
+            "type": "bytes32"
+          },
+          {
+            "name": "user",
+            "type": "address"
+          }
+        ],
+        "name": "getConfirmationOf",
+        "outputs": [
+          {
+            "name": "confirmed",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "data",
+            "type": "bytes"
+          }
+        ],
+        "name": "calculateKey",
+        "outputs": [
+          {
+            "name": "key",
+            "type": "bytes32"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "name": "confirmations",
+        "outputs": [
+          {
+            "name": "count",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "_info",
+            "type": "bytes32"
+          }
+        ],
+        "name": "setInfo",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "name": "_requiredCount",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "type": "constructor"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "key",
+            "type": "bytes32"
+          }
+        ],
+        "name": "OnConfirmationRequired",
+        "type": "event"
+      }
+    ],
+    "unlinked_binary": "0x6060604052346100005760405160208061035983398101604052515b805b60008190555b505b505b610323806100366000396000f300606060405263ffffffff60e060020a600035041663370158ea8114610050578063613bf18a1461006f578063a495b1531461009f578063ec95bfe714610104578063ed56900f14610126575b610000565b346100005761005d610138565b60408051918252519081900360200190f35b346100005761008b600435600160a060020a036024351661013e565b604080519115158252519081900360200190f35b346100005761005d600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284375094965061016d95505050505050565b60408051918252519081900360200190f35b346100005761005d6004356101d4565b60408051918252519081900360200190f35b34610000576101366004356101e6565b005b60025481565b6000828152600160208181526040808420600160a060020a0386168552909201905290205460ff165b92915050565b6000816040518082805190602001908083835b6020831061019f5780518252601f199092019160209182019101610180565b6001836020036101000a038019825116818451168082178552505050505050905001915050604051809103902090505b919050565b60016020526000908152604090205481565b600060006102246000368080601f0160208091040260200160405190810160405280939291908181526020018383808284375061016d945050505050565b915061022f82610281565b90506000548110156102755780600114156102705760405182907f4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b90600090a25b61027b565b60028390555b5b505050565b6000818152600160208181526040808420600160a060020a0333168552909201905281205460ff16156102b357610000565b506000818152600160208181526040808420600160a060020a03331685528084018352908420805460ff19168417905592849052819052815401908190555b9190505600a165627a7a72305820eea0d913e83dc07243e4466e8df48e7786cdcd9a7c1ad47f55746e9b5f144bf90029",
+    "events": {
+      "0x4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "key",
+            "type": "bytes32"
+          }
+        ],
+        "name": "OnConfirmationRequired",
+        "type": "event"
+      }
+    },
+    "updated_at": 1486741064431,
+    "links": {}
+  },
   "default": {
     "abi": [
       {
@@ -8104,8 +8503,8 @@ var SolidityEvent = require("web3/lib/web3/event.js");
 
 },{"web3":176,"web3/lib/web3/event.js":203}],6:[function(require,module,exports){
 module.exports = {
-  "Graph": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/Graph.sol.js"),
   "Migrations": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/Migrations.sol.js"),
+  "Graph": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/Graph.sol.js"),
   "Registry": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/Registry.sol.js"),
   "WithConfirmation": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/WithConfirmation.sol.js"),
   "WithConfirmationMock": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/WithConfirmationMock.sol.js"),
