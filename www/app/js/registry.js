@@ -7,7 +7,7 @@ registry = {
      */
     prepare: function(web3, Registry) {
         Registry.setProvider(web3.currentProvider);
-        return web3.net.getVersionPromise()
+        return web3.version.getNetworkPromise()
             .then(version => {
                 Registry.setNetwork(version);
             });

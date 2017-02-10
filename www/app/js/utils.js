@@ -1,5 +1,5 @@
 const Utils = {
-    promisify = function (web3) {
+    promisify: function (web3) {
         // Pipes values from a Web3 callback.
         var callbackToResolve = function (resolve, reject) {
             return function (error, value) {
@@ -56,7 +56,7 @@ const Utils = {
     },
 
     init: function (web3) {
-        promisify(web3);
+        Utils.promisify(web3);
         
         // From https://gist.github.com/xavierlepretre/88682e871f4ad07be4534ae560692ee6
         web3.eth.getTransactionReceiptMined = function (txnHash, interval) {

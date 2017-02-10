@@ -11,8 +11,8 @@ describe("basic calls", function() {
 
     beforeEach("prepare spies", function() {
         web3 = {
-            net: {
-                getVersionPromise: () => {
+            version: {
+                getNetworkPromise: () => {
                     return new Promise(function (resolve, reject) {
                         return resolve("45")
                     });
@@ -27,10 +27,10 @@ describe("basic calls", function() {
                 console.log(typeof network);
             }
         };
-        web3.net.getVersionPromise = chai.spy(web3.net.getVersionPromise);
+        web3.version.getNetworkPromise = chai.spy(web3.version.getNetworkPromise);
         Registry.setProvider = chai.spy(Registry.setProvider);
         Registry.setNetwork = chai.spy(Registry.setNetwork);
-        expect(web3.net.getVersionPromise).to.be.spy;
+        expect(web3.version.getNetworkPromise).to.be.spy;
         expect(Registry.setProvider).to.be.spy;
         expect(Registry.setNetwork).to.be.spy;
     });
@@ -38,7 +38,7 @@ describe("basic calls", function() {
     it("prepare called sub-functions as expected", function() {
         registry.prepare(web3, Registry)
             .then(() => {});
-        expect(web3.net.getVersionPromise).to.have.been.called();
+        expect(web3.version.getNetworkPromise).to.have.been.called();
         expect(Registry.setProvider).to.have.been.called.with("currentProvider1");
         expect(Registry.setNetwork).to.have.been.called.with("45"); // This one does not pass
     });
