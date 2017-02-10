@@ -69,6 +69,4 @@ function updateUi() {
 //lbl_account
 
 // add an appropriate event listener
-window.addEventListener("web3Ready", function(e) {
-	updateUi();
-});
+window.addEventListener("web3Ready", updateUi);
