@@ -8,3 +8,7 @@ repository for the Dutch Blockchain Hackathon
 - client running, connected to ropsten
 - in www/app, run python -m SimpleHTTPServer 3030
 - visit 127.0.0.1:3030 with your browser
+
+## How to run tests
+- `sudo npm install -g mocha`
+- in `www/test`, do `npm install`
