@@ -8503,8 +8503,8 @@ var SolidityEvent = require("web3/lib/web3/event.js");
 
 },{"web3":176,"web3/lib/web3/event.js":203}],6:[function(require,module,exports){
 module.exports = {
-  "Migrations": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/Migrations.sol.js"),
   "Graph": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/Graph.sol.js"),
+  "Migrations": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/Migrations.sol.js"),
   "Registry": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/Registry.sol.js"),
   "WithConfirmation": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/WithConfirmation.sol.js"),
   "WithConfirmationMock": require("/home/vagrant/DAPPS/b9examples/dbh-b9lab-hackathon/truffle/build/contracts/WithConfirmationMock.sol.js"),
@@ -45568,58 +45568,4 @@ window.addEventListener('load', function() {
 
  
 
-var accounts;
-var account;
 
-function setStatus(message) {
-  var status = document.getElementById("status");
-  status.innerHTML = message;
-};
-
-function refreshBalance() {
-  var meta = MetaCoin.deployed();
-
-  meta.getBalance.call(account, {from: account}).then(function(value) {
-    var balance_element = document.getElementById("balance");
-    balance_element.innerHTML = value.valueOf();
-  }).catch(function(e) {
-    console.log(e);
-    setStatus("Error getting balance; see log.");
-  });
-};
-
-function sendCoin() {
-  var meta = MetaCoin.deployed();
-
-  var amount = parseInt(document.getElementById("amount").value);
-  var receiver = document.getElementById("receiver").value;
-
-  setStatus("Initiating transaction... (please wait)");
-
-  meta.sendCoin(receiver, amount, {from: account}).then(function() {
-    setStatus("Transaction complete!");
-    refreshBalance();
-  }).catch(function(e) {
-    console.log(e);
-    setStatus("Error sending coin; see log.");
-  });
-};
-
-window.onload = function() {
-  web3.eth.getAccounts(function(err, accs) {
-    if (err != null) {
-      alert("There was an error fetching your accounts.");
-      return;
-    }
-
-    if (accs.length == 0) {
-      alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
-      return;
-    }
-
-    accounts = accs;
-    account = accounts[0];
-
-    refreshBalance();
-  });
-}
