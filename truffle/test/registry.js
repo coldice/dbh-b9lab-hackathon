@@ -111,9 +111,31 @@ contract('Registry', function(accounts) {
     describe("conflict protection", function() {
 
         beforeEach("should create a brand new registry with a name in already", function() {
+            return Registry.new()
+                .then(created => {
+                    instance = created;
+                    instance.setName("userName1", {from: user1});
+                });
         });
 
         it("should be able to change my existing name", function() {
+            return instance.setName("newUserName1", {from: user1})
+                .then(txHash => {
+                    return web3.eth.getTransactionReceiptMined(txHash);
+                })
+                .then(receipt => {
+                    var receivedEvent = instance.LogNameChanged().formatter(receipt.logs[0])
+                    assert.strictEqual(receivedEvent.args.who, user1, "should be sender");
+                    assert.strictEqual(web3.toUtf8(receivedEvent.args.name), "newUserName1", "should be the new name");
+                    return Promise.all([
+                            instance.names(user1),
+                            instance.addresses("newUserName1")
+                        ]);
+                })
+                .then(results => {
+                    assert.strictEqual(web3.toUtf8(results[0]), "newUserName1", "should save new name");
+                    assert.strictEqual(results[1], user1, "should save address");
+                });
         });
 
         it("should refuse to overwrite the name if someone else", function() {
