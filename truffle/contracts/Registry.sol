@@ -8,12 +8,15 @@ contract Registry {
 
 	function setName(bytes32 name) returns (bool successful) {
 		if (name != 0 // It is ok to set your name back to empty string
+			&& addresses[name] != 0 // It is taken for real
 			&& addresses[name] != msg.sender) { // This name is given to someone else
 			// Already taken
 			throw;
 		}
 		names[msg.sender] = name;
-		addresses[name] = msg.sender;
+		if (name != 0) {
+			addresses[name] = msg.sender;
+		}
 		LogNameChanged(msg.sender, name);
 		return true;
 	}
