@@ -42,4 +42,21 @@ describe("basic calls", function() {
         expect(Registry.setProvider).to.have.been.called.with("currentProvider1");
         expect(Registry.setNetwork).to.have.been.called.with("45"); // This one does not pass
     });
+
+    it("getNameOf called sub-functions as expected", function() {
+    });
+
+    it("getAdressOf called sub-functions as expected", function() {
+    });
+
+    it("setNametTo called sub-functions as expected", function() {
+    });
+
+    it("listenToUpdates called sub-functions as expected", function() {
+    });
+
+    it("stopListeningToUpdates called sub-functions as expected", function() {
+	});
+
+
 });
