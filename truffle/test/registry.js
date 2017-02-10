@@ -77,6 +77,33 @@ contract('Registry', function(accounts) {
         });
 
         it("should be able to register 2 names for 2 different people", function() {
+            return Promise.all([
+                    instance.setName("userName1", { from: user1 }),
+                    instance.setName("userName2", { from: user2 })
+                ])
+                .then(txHashes => {
+                    return web3.eth.getTransactionReceiptMined(txHashes);
+                })
+                .then((receipts) => {
+                    var receivedEvent1 = instance.LogNameChanged().formatter(receipts[0].logs[0]);
+                    var receivedEvent2 = instance.LogNameChanged().formatter(receipts[1].logs[0]);
+                    assert.strictEqual(receivedEvent1.args.who, user1, "should be sender 1");
+                    assert.strictEqual(receivedEvent2.args.who, user2, "should be sender 2");
+                    assert.strictEqual(web3.toUtf8(receivedEvent1.args.name), "userName1", "should be the name of user1");
+                    assert.strictEqual(web3.toUtf8(receivedEvent2.args.name), "userName2", "should be the name of user2");
+                    return Promise.all([
+                            instance.names(user1),
+                            instance.names(user2),
+                            instance.addresses("userName1"),
+                            instance.addresses("userName2")
+                        ]);
+                })
+                .then(results => {
+                    assert.strictEqual(web3.toUtf8(results[0]), "userName1", "should save name");
+                    assert.strictEqual(results[2], user1, "should save address");
+                    assert.strictEqual(web3.toUtf8(results[1]), "userName2", "should save name");
+                    assert.strictEqual(results[3], user2, "should save address");
+                })
         });
 
     });
