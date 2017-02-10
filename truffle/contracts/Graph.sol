@@ -28,7 +28,7 @@ contract Graph is WithConfirmation {
 
     modifier yourLinkOnly(address from, address to) {
         // Checking for dummy values first
-        if (from == 0 || to == 0 || !isYourLink(from, to)) {
+        if (from == 0 || to == 0 || !isYourLink(from, to) || from == to) {
             throw;
         }
         _;
