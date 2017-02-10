@@ -13,6 +13,9 @@ contract Registry {
             // Already taken
             throw;
         }
+        if (names[msg.sender] != "") { // If the sender had previously set a name
+        	addresses[names[msg.sender]] = 0; // His former name will map to 0
+        }
         names[msg.sender] = name;
         if (name != 0) {
             addresses[name] = msg.sender;
