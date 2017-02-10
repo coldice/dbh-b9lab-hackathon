@@ -129,12 +129,14 @@ contract('Registry', function(accounts) {
                     assert.strictEqual(web3.toUtf8(receivedEvent.args.name), "newUserName1", "should be the new name");
                     return Promise.all([
                             instance.names(user1),
-                            instance.addresses("newUserName1")
+                            instance.addresses("newUserName1"),
+                            instance.addresses("userName1")
                         ]);
                 })
                 .then(results => {
                     assert.strictEqual(web3.toUtf8(results[0]), "newUserName1", "should save new name");
                     assert.strictEqual(results[1], user1, "should save address");
+                    assert.strictEqual(results[2], "0x0000000000000000000000000000000000000000", "should map the former name to 0");
                 });
         });
 
@@ -175,13 +177,17 @@ contract('Registry', function(accounts) {
                     return Promise.all([
                             instance.names(user1),
                             instance.names(user2),
-                            instance.addresses("")
+                            instance.addresses(""),
+                            instance.addresses("userName1"),
+                            instance.addresses("userName2")
                         ]);
                 })
                 .then(results => {
                     assert.strictEqual(web3.toUtf8(results[0]), "", "should save name of user 1");
                     assert.strictEqual(web3.toUtf8(results[1]), "", "should save name of user 2");
                     assert.strictEqual(results[2], "0x0000000000000000000000000000000000000000", "should keep the 0 at 0");
+                    assert.strictEqual(results[3], "0x0000000000000000000000000000000000000000", "should map the former name of user1 to 0");
+                    assert.strictEqual(results[4], "0x0000000000000000000000000000000000000000", "should map the former name of user2 to 0");
                 });
         });
 
