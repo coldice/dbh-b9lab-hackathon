@@ -1,23 +1,23 @@
 pragma solidity ^0.4.5;
 
 contract Registry {
-	mapping (address => bytes32) public names;
-	mapping (bytes32 => address) public addresses;
+    mapping (address => bytes32) public names;
+    mapping (bytes32 => address) public addresses;
 
-	event LogNameChanged(address indexed who, bytes32 indexed name);
+    event LogNameChanged(address indexed who, bytes32 indexed name);
 
-	function setName(bytes32 name) returns (bool successful) {
-		if (name != 0 // It is ok to set your name back to empty string
-			&& addresses[name] != 0 // It is taken for real
-			&& addresses[name] != msg.sender) { // This name is given to someone else
-			// Already taken
-			throw;
-		}
-		names[msg.sender] = name;
-		if (name != 0) {
-			addresses[name] = msg.sender;
-		}
-		LogNameChanged(msg.sender, name);
-		return true;
-	}
+    function setName(bytes32 name) returns (bool successful) {
+        if (name != 0 // It is ok to set your name back to empty string
+            && addresses[name] != 0 // It is taken for real
+            && addresses[name] != msg.sender) { // This name is given to someone else
+            // Already taken
+            throw;
+        }
+        names[msg.sender] = name;
+        if (name != 0) {
+            addresses[name] = msg.sender;
+        }
+        LogNameChanged(msg.sender, name);
+        return true;
+    }
 }
