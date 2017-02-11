@@ -16,8 +16,8 @@
     <link href="style.css" rel="stylesheet"> 
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/utils.js"></script>
-    <script type="text/javascript" src="js/registry.js"></script>
     <script type="text/javascript" src="js/prepare.js"></script>
+    <script type="text/javascript" src="js/graph.js"></script>
     <script type="text/javascript" src="js/add.js"></script>
     <script type="text/javascript" src="js/datatools.js"></script>
 </head>
@@ -30,11 +30,17 @@
         <form class="form-signin">
             <h2 class="form-signin-heading">Acount: <span id="lbl_account">xxx</span></h2>
             
-            <input id="txt_address" type="address" class="form-control" placeholder="Address" data-auto-param="address">
+            <input id="txt_address" type="address" class="form-control" placeholder="Address">
             
-            <input id="txt_capacity" type="Capacity" class="form-control" placeholder="Capacity">
+            <input id="txt_loss" type="loss" class="form-control" placeholder="Loss">
+
+            <input id="txt_throughput" type="throughput" class="form-control" placeholder="Throughput">
             
             <button id="btn_submit_add" class="btn btn-lg btn-primary btn-block" type="button">Submit</button>
+            
+            <p style="display:none;" id="lbl_error">xxx</p>
+            <p style="display:none;" id="lbl_processing">Processing</p>
+
         </form>
     </div>
     <!-- /container -->
