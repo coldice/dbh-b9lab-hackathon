@@ -36,10 +36,20 @@ function createEmptyEndpointRow() {
  *     name: string,
  *     pointType: number,
  *     location: string   
+ *     pointIndex : number (optional)
  * }
  */
 function populateEndpointRow(trObject, endpointInfo) {
+    trObject.attr("data-address", endpointInfo.who); 
+    if(typeof(endpointInfo.pointIndex) != "undefined") {
+        trObject.find("td.index").html(endpointInfo.pointIndex);
+    }
+    trObject.find("td.pointName").html(endpointInfo.name);
+    trObject.find("td.pointType").html(endpointInfo.pointType); 
+    trObject.find("td.location").html(endpointInfo.location);
+    trObject.find("button.add").attr("data-param", "address="+endpointInfo.who);
 }
+
 
 /**
  * Finds the pertinent row in tableObject, and passes it on to populateEndpointRow.
