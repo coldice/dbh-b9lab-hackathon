@@ -1,26 +1,33 @@
 pragma solidity ^0.4.5;
 
 contract Registry {
-    mapping (address => bytes32) public names;
+    struct Info {
+        bytes32 name;
+        uint pointType;
+        string location;
+    }
+    mapping (address => Info) public infos;
     mapping (bytes32 => address) public addresses;
 
-    event LogNameChanged(address indexed who, bytes32 indexed name);
+    event LogInfoChanged(address indexed who, bytes32 indexed name, uint indexed pointType, string location);
 
-    function setName(bytes32 name) returns (bool successful) {
+    function setInfo(bytes32 name, uint pointType, string location) returns (bool successful) {
         if (name != 0 // It is ok to set your name back to empty string
             && addresses[name] != 0 // It is taken for real
             && addresses[name] != msg.sender) { // This name is given to someone else
             // Already taken
             throw;
         }
-        if (names[msg.sender] != "") { // If the sender had previously set a name
-        	addresses[names[msg.sender]] = 0; // His former name will map to 0
+        if (infos[msg.sender].name != "") { // If the sender had previously set a name
+        	addresses[infos[msg.sender].name] = 0; // His former name will map to 0
         }
-        names[msg.sender] = name;
+        infos[msg.sender].name = name;
+        infos[msg.sender].pointType = pointType;
+        infos[msg.sender].location = location;
         if (name != 0) {
             addresses[name] = msg.sender;
         }
-        LogNameChanged(msg.sender, name);
+        LogInfoChanged(msg.sender, name, pointType, location);
         return true;
     }
 }
