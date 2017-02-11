@@ -1,5 +1,5 @@
 function updateUi() {
-    var tbodyObject = $("tbody");
+    var tbodyObject = $("tbody#connection");
     graph.listenToUpdates(
             (error, confirmationRequired) => {
                 if (error) {
@@ -12,7 +12,7 @@ function updateUi() {
                 if (error) {
                     console.error(error);
                 } else {
-                    findOrCreateAndPopulateEndpointRow(tbodyObject, receivedEvent.args);
+                    findOrCreateAndPopulateConnectionRow(tbodyObject, linkAdded.args);
                 }
             }
         );
@@ -25,11 +25,11 @@ function updateUi() {
  */
 function createEmptyConnectionRow() {
     var tr = $("<tr/>").addClass("data-row");
-    var thIndex = $("<th/>").addClass("linkIndex").attr("scope", "row").appendTo(tr);
-    var tdPointNameA = $("<td/>").addClass("nameFrom").appendTo(tr);
-    var tdPointTypeA = $("<td/>").addClass("typeFrom").appendTo(tr);
-    var tdPointNameB = $("<td/>").addClass("nameTo").appendTo(tr);
-    var tdPointTypeB = $("<td/>").addClass("typeTo").appendTo(tr);
+    var thIndex = $("<th/>").addClass("linkIndex text-center").attr("scope", "row").appendTo(tr);
+    var tdNameFrom = $("<td/>").addClass("nameFrom text-center").appendTo(tr);
+    var tdTypeFrom = $("<td/>").addClass("typeFrom text-center").appendTo(tr);
+    var tdNameTo = $("<td/>").addClass("nameTo text-center").appendTo(tr);
+    var tdTypeTo = $("<td/>").addClass("typeTo text-center").appendTo(tr);
     var tdAction = $("<td/>").addClass("text-center").appendTo(tr);
     var buttonConfirm = $("<button/>").html("Confirm").addClass("btn btn-primary confirm").attr({
             "type": "button",
@@ -60,17 +60,18 @@ function createEmptyConnectionRow() {
  * }
  */
 function populateConnectionRow(trObject, connectionInfo) {
+    console.log(connectionInfo);
     trObject.attr({
         "data-from": connectionInfo.from,
         "data-to": connection.to
     }); 
     if(typeof(connectionInfo.linkIndex) != "undefined") {
-        trObject.find("td.linkIndex").html(connectionInfo.linkIndex);
+        trObject.find("th.linkIndex").html(connectionInfo.linkIndex);
     }
-    trObject.find("td.nameFrom").html(connectionInfo.nameA);
-    trObject.find("td.typeFrom").html(connectionInfo.pointTypeA);
-    trObject.find("td.nameTo").html(connectionInfo.nameB);
-    trObject.find("td.typeTo").html(connectionInfo.pointTypeB);
+    trObject.find("td.nameFrom").html(connectionInfo.nameFrom);
+    trObject.find("td.typeFrom").html(connectionInfo.typeFrom);
+    trObject.find("td.nameTo").html(connectionInfo.nameTo);
+    trObject.find("td.typeTo").html(connectionInfo.typeTo);
     // TODO Look again at what to put
     trObject.find("button.confirm").attr("data-param", "address=" + connectionInfo.from);
     trObject.find("button.remove").attr("data-param", "address=" + connectionInfo.from);

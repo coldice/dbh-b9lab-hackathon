@@ -3,16 +3,14 @@ graph = {
     filterLinkAdded: null,
     web3: null,
     graphContract: null,
-    registryContract: null,
 
     /**
      * Call this when web3 is ready.
      * @returns nothing.
      */
-    prepare: function(web3Object, graphContract, registryContract) {
+    prepare: function(web3Object, graphContract) {
         graph.web3 = web3Object;
         graph.graphContract = graphContract;
-        graph.registryContract = registryContract;
     },
 
     _infoIndices: {
@@ -33,11 +31,10 @@ graph = {
      * }
      */
     getLinkInfo: function(from, to) {
-        var registryDeployed = registry.registryContract.deployed();
         return Promise.all([
                 graph.graphContract.deployed().directedLinks(from, to),
-                registryDeployed.getInfoOf(from),
-                registryDeployed.getInfoOf(to)
+                registry.getInfoOf(from),
+                registry.getInfoOf(to)
             ])
             .then(infos => {
                 var info = infos[0];
@@ -75,8 +72,8 @@ graph = {
             receivedEvent.args.loss = receivedEvent.args.loss.toNumber();
             receivedEvent.args.throughput = receivedEvent.args.throughput.toNumber();
             return Promise.all([
-                    registry.registryContract.getInfoOf(receivedEvent.args.from),
-                    registry.registryContract.getInfoOf(receivedEvent.args.to)
+                    registry.getInfoOf(receivedEvent.args.from),
+                    registry.getInfoOf(receivedEvent.args.to)
                 ])
                 .then(infos => {
                     receivedEvent.args.nameFrom = infos[0].name;
@@ -115,11 +112,11 @@ graph = {
             callbackConfirmationRequired, callbackLinkAdded) {
         if (graph.filterConfirmationRequired == null) {
             graph.filterConfirmationRequired = graph.graphContract.deployed()
-                .OnConfirmationRequired({}, { fromBlock: 0 });
+                .OnConfirmationRequired({}, { fromBlock: 516462 });
         }
         if (graph.filterLinkAdded == null) {
             graph.filterLinkAdded = graph.graphContract.deployed()
-                .LogLinkAdded({}, { fromBlock: 0 });
+                .LogLinkAdded({}, { fromBlock: 516462 });
         }
         graph.filterConfirmationRequired.watch(callbackConfirmationRequired);
         graph.filterLinkAdded.watch(graph._richLinkAddedCallback(callbackLinkAdded));
