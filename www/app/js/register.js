@@ -70,9 +70,9 @@ function updateUi() {
         .then(registry.getInfoOf)
         .then(info => {
             $("#lbl_account").html(info.address);
-            $("#lbl_name").html(info.name);
-            $("#lbl_point_type").html(info.pointType);
-            $("#lbl_location").html(info.location);
+            $("#txt_name").val(info.name);
+            $("#txt_point_type").val(info.pointType);
+            $("#txt_location").val(info.location);
         })
         .catch(error => {
             console.error(error);
