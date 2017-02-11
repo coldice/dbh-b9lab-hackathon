@@ -6,16 +6,11 @@ registry = {
     /**
      * Call this when web3 is ready.
      * pass along the RegistryContract EtherPudding.
-     * @returns an empty promise.
+     * @returns nothing.
      */
     prepare: function(web3Object, registryContract) {
         registry.registryContract = registryContract;
         registry.web3 = web3Object;
-        registryContract.setProvider(web3Object.currentProvider);
-        return web3Object.version.getNetworkPromise()
-            .then(version => {
-                registryContract.setNetwork(version);
-            });
     },
 
     pointTypes: {
