@@ -15,13 +15,23 @@ window.addEventListener('load', function() {
         contract.setProvider(window.web3.currentProvider);
     });
     
-    if (typeof registry != "undefined") {
-        registry.prepare(web3, Registry);
-    }
-    if (typeof graph != "undefined") {
-        graph.prepare(web3, Graph);
-    }
-
-    var event = new CustomEvent("web3Ready", {});
-    window.dispatchEvent(event);
+    return web3.version.getNetworkPromise()
+        .then(version => {
+            [Graph,Migrations,Registry].forEach(function(contract) {
+                contract.setNetwork(version);
+            });
+        
+            if (typeof registry != "undefined") {
+                return registry.prepare(web3, Registry);
+            }
+        })
+        .then(() => {
+            if (typeof graph != "undefined") {
+                return graph.prepare(web3, Graph);
+            }
+        })
+        .then(() => {
+            var event = new CustomEvent("web3Ready", {});
+            window.dispatchEvent(event);
+        });
 });
