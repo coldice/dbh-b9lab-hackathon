@@ -4,15 +4,14 @@ import "WithConfirmation.sol";
 
 contract Graph is WithConfirmation {
     struct Link {
-        address to;
         uint loss; // The unit is such that 1% is encoded as 1000
         uint throughput; // The unit is microWatt.
     }
     
     /**
-     * from => to
+     * from => to => info associated
      */
-    mapping (address => Link) public directedLinks;
+    mapping (address => mapping(address => Link)) public directedLinks;
     
     event LogLinkAdded(
         address indexed from,
@@ -43,8 +42,7 @@ contract Graph is WithConfirmation {
         yourLinkOnly(from, to)
         isConfirmed
         returns (bool successful) {
-        directedLinks[from] = Link({
-            to: to,
+        directedLinks[from][to] = Link({
             loss: loss,
             throughput: throughput
         });
