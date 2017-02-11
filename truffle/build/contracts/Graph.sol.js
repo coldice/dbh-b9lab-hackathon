@@ -231,13 +231,13 @@ var SolidityEvent = require("web3/lib/web3/event.js");
 
   Contract.new = function() {
     if (this.currentProvider == null) {
-      throw new Error("Migrations error: Please call setProvider() first before calling new().");
+      throw new Error("Graph error: Please call setProvider() first before calling new().");
     }
 
     var args = Array.prototype.slice.call(arguments);
 
     if (!this.unlinked_binary) {
-      throw new Error("Migrations error: contract binary not set. Can't deploy new instance.");
+      throw new Error("Graph error: contract binary not set. Can't deploy new instance.");
     }
 
     var regex = /__[^_]+_+/g;
@@ -256,7 +256,7 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         return name != arr[index + 1];
       }).join(", ");
 
-      throw new Error("Migrations contains unresolved libraries. You must deploy and link the following libraries before you can deploy a new version of Migrations: " + unlinked_libraries);
+      throw new Error("Graph contains unresolved libraries. You must deploy and link the following libraries before you can deploy a new version of Graph: " + unlinked_libraries);
     }
 
     var self = this;
@@ -297,7 +297,7 @@ var SolidityEvent = require("web3/lib/web3/event.js");
 
   Contract.at = function(address) {
     if (address == null || typeof address != "string" || address.length != 42) {
-      throw new Error("Invalid address passed to Migrations.at(): " + address);
+      throw new Error("Invalid address passed to Graph.at(): " + address);
     }
 
     var contract_class = this.web3.eth.contract(this.abi);
@@ -308,7 +308,7 @@ var SolidityEvent = require("web3/lib/web3/event.js");
 
   Contract.deployed = function() {
     if (!this.address) {
-      throw new Error("Cannot find deployed address: Migrations not deployed or address not set.");
+      throw new Error("Cannot find deployed address: Graph not deployed or address not set.");
     }
 
     return this.at(this.address);
@@ -350,22 +350,9 @@ var SolidityEvent = require("web3/lib/web3/event.js");
   "3": {
     "abi": [
       {
-        "constant": false,
-        "inputs": [
-          {
-            "name": "new_address",
-            "type": "address"
-          }
-        ],
-        "name": "upgrade",
-        "outputs": [],
-        "payable": false,
-        "type": "function"
-      },
-      {
         "constant": true,
         "inputs": [],
-        "name": "last_completed_migration",
+        "name": "requiredCount",
         "outputs": [
           {
             "name": "",
@@ -377,12 +364,87 @@ var SolidityEvent = require("web3/lib/web3/event.js");
       },
       {
         "constant": true,
-        "inputs": [],
-        "name": "owner",
+        "inputs": [
+          {
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "name": "to",
+            "type": "address"
+          }
+        ],
+        "name": "isYourLink",
         "outputs": [
+          {
+            "name": "isIndeed",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
           {
             "name": "",
             "type": "address"
+          }
+        ],
+        "name": "directedLinks",
+        "outputs": [
+          {
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "name": "loss",
+            "type": "uint256"
+          },
+          {
+            "name": "throughput",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "key",
+            "type": "bytes32"
+          },
+          {
+            "name": "user",
+            "type": "address"
+          }
+        ],
+        "name": "getConfirmationOf",
+        "outputs": [
+          {
+            "name": "confirmed",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "data",
+            "type": "bytes"
+          }
+        ],
+        "name": "calculateKey",
+        "outputs": [
+          {
+            "name": "key",
+            "type": "bytes32"
           }
         ],
         "payable": false,
@@ -392,12 +454,47 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "constant": false,
         "inputs": [
           {
-            "name": "completed",
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "name": "loss",
+            "type": "uint256"
+          },
+          {
+            "name": "throughput",
             "type": "uint256"
           }
         ],
-        "name": "setCompleted",
-        "outputs": [],
+        "name": "submitLink",
+        "outputs": [
+          {
+            "name": "successful",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "name": "confirmations",
+        "outputs": [
+          {
+            "name": "count",
+            "type": "uint256"
+          }
+        ],
         "payable": false,
         "type": "function"
       },
@@ -405,33 +502,99 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "inputs": [],
         "payable": false,
         "type": "constructor"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "loss",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "throughput",
+            "type": "uint256"
+          }
+        ],
+        "name": "LogLinkAdded",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "key",
+            "type": "bytes32"
+          }
+        ],
+        "name": "OnConfirmationRequired",
+        "type": "event"
       }
     ],
-    "unlinked_binary": "0x606060405234610000575b60008054600160a060020a03191633600160a060020a03161790555b5b610190806100366000396000f300606060405263ffffffff60e060020a6000350416630900f0108114610045578063445df0ac146100605780638da5cb5b1461007f578063fdacd576146100a8575b610000565b346100005761005e600160a060020a03600435166100ba565b005b346100005761006d61012d565b60408051918252519081900360200190f35b346100005761008c610133565b60408051600160a060020a039092168252519081900360200190f35b346100005761005e600435610142565b005b6000805433600160a060020a03908116911614156101275781905080600160a060020a031663fdacd5766001546040518263ffffffff1660e060020a02815260040180828152602001915050600060405180830381600087803b156100005760325a03f115610000575050505b5b5b5050565b60015481565b600054600160a060020a031681565b60005433600160a060020a039081169116141561015f5760018190555b5b5b505600a165627a7a723058203a6085d73655660b8bc08e0f0c126e6542a76f5c99d55f37ac894ebc918894e60029",
-    "events": {},
-    "updated_at": 1486831422892,
-    "address": "0x93e23dadd4ae706181c2a2d9cf1caec7fbbf31e0",
-    "links": {}
+    "unlinked_binary": "0x606060405234610000575b60025b60008190555b505b5b610546806100256000396000f300606060405236156100675763ffffffff60e060020a60003504166306c7dbb5811461006c5780633a07bfb31461008b57806350456660146100be578063613bf18a146100ff578063a495b1531461012f578063bfd58bdf14610194578063ec95bfe7146101cd575b610000565b34610000576100796101ef565b60408051918252519081900360200190f35b34610000576100aa600160a060020a03600435811690602435166101f5565b604080519115158252519081900360200190f35b34610000576100d7600160a060020a0360043516610231565b60408051600160a060020a039094168452602084019290925282820152519081900360600190f35b34610000576100aa600435600160a060020a036024351661025d565b604080519115158252519081900360200190f35b3461000057610079600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284375094965061028c95505050505050565b60408051918252519081900360200190f35b34610000576100aa600160a060020a03600435811690602435166044356064356102f3565b604080519115158252519081900360200190f35b3461000057610079600435610492565b60408051918252519081900360200190f35b60005481565b600082600160a060020a031633600160a060020a03161480610228575081600160a060020a031633600160a060020a0316145b90505b92915050565b6002602081905260009182526040909120805460018201549190920154600160a060020a039092169183565b6000828152600160208181526040808420600160a060020a0386168552909201905290205460ff165b92915050565b6000816040518082805190602001908083835b602083106102be5780518252601f19909201916020918201910161029f565b6001836020036101000a038019825116818451168082178552505050505050905001915050604051809103902090505b919050565b60008484600160a060020a03821615806103145750600160a060020a038116155b80610326575061032482826101f5565b155b80610342575080600160a060020a031682600160a060020a0316145b1561034c57610000565b6000600061038a6000368080601f0160208091040260200160405190810160405280939291908181526020018383808284375061028c945050505050565b9150610395826104a4565b90506000548110156103db5780600114156103d65760405182907f4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b90600090a25b610484565b60408051606081018252600160a060020a038a811680835260208084018c81528486018c81528f851660008181526002808652908990209751885473ffffffffffffffffffffffffffffffffffffffff191697169690961787559151600187015551949093019390935583518b81529283018a90528351909391927fc0e8693a712ee49068f452bfc718b4b43b15252c5c6403e371d956bcd9c588c392908290030190a3600194505b5b50505b5050949350505050565b60016020526000908152604090205481565b6000818152600160208181526040808420600160a060020a0333168552909201905281205460ff16156104d657610000565b506000818152600160208181526040808420600160a060020a03331685528084018352908420805460ff19168417905592849052819052815401908190555b9190505600a165627a7a7230582005fc70329a49fbf786589ab6cfeac608c65a287cb75e64455612c81656a7ad130029",
+    "events": {
+      "0xc0e8693a712ee49068f452bfc718b4b43b15252c5c6403e371d956bcd9c588c3": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "loss",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "throughput",
+            "type": "uint256"
+          }
+        ],
+        "name": "LogLinkAdded",
+        "type": "event"
+      },
+      "0x4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "key",
+            "type": "bytes32"
+          }
+        ],
+        "name": "OnConfirmationRequired",
+        "type": "event"
+      }
+    },
+    "updated_at": 1486831422882,
+    "links": {},
+    "address": "0x9083da690a086794dbf4dad44efc196bc2a29c87"
   },
   "default": {
     "abi": [
       {
-        "constant": false,
-        "inputs": [
-          {
-            "name": "new_address",
-            "type": "address"
-          }
-        ],
-        "name": "upgrade",
-        "outputs": [],
-        "payable": false,
-        "type": "function"
-      },
-      {
         "constant": true,
         "inputs": [],
-        "name": "last_completed_migration",
+        "name": "requiredCount",
         "outputs": [
           {
             "name": "",
@@ -443,12 +606,87 @@ var SolidityEvent = require("web3/lib/web3/event.js");
       },
       {
         "constant": true,
-        "inputs": [],
-        "name": "owner",
+        "inputs": [
+          {
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "name": "to",
+            "type": "address"
+          }
+        ],
+        "name": "isYourLink",
         "outputs": [
+          {
+            "name": "isIndeed",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
           {
             "name": "",
             "type": "address"
+          }
+        ],
+        "name": "directedLinks",
+        "outputs": [
+          {
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "name": "loss",
+            "type": "uint256"
+          },
+          {
+            "name": "throughput",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "key",
+            "type": "bytes32"
+          },
+          {
+            "name": "user",
+            "type": "address"
+          }
+        ],
+        "name": "getConfirmationOf",
+        "outputs": [
+          {
+            "name": "confirmed",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "data",
+            "type": "bytes"
+          }
+        ],
+        "name": "calculateKey",
+        "outputs": [
+          {
+            "name": "key",
+            "type": "bytes32"
           }
         ],
         "payable": false,
@@ -458,12 +696,47 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "constant": false,
         "inputs": [
           {
-            "name": "completed",
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "name": "loss",
+            "type": "uint256"
+          },
+          {
+            "name": "throughput",
             "type": "uint256"
           }
         ],
-        "name": "setCompleted",
-        "outputs": [],
+        "name": "submitLink",
+        "outputs": [
+          {
+            "name": "successful",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "name": "confirmations",
+        "outputs": [
+          {
+            "name": "count",
+            "type": "uint256"
+          }
+        ],
         "payable": false,
         "type": "function"
       },
@@ -471,12 +744,90 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "inputs": [],
         "payable": false,
         "type": "constructor"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "loss",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "throughput",
+            "type": "uint256"
+          }
+        ],
+        "name": "LogLinkAdded",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "key",
+            "type": "bytes32"
+          }
+        ],
+        "name": "OnConfirmationRequired",
+        "type": "event"
       }
     ],
-    "unlinked_binary": "0x606060405234610000575b60008054600160a060020a03191633600160a060020a03161790555b5b610190806100366000396000f300606060405263ffffffff60e060020a6000350416630900f0108114610045578063445df0ac146100605780638da5cb5b1461007f578063fdacd576146100a8575b610000565b346100005761005e600160a060020a03600435166100ba565b005b346100005761006d61012d565b60408051918252519081900360200190f35b346100005761008c610133565b60408051600160a060020a039092168252519081900360200190f35b346100005761005e600435610142565b005b6000805433600160a060020a03908116911614156101275781905080600160a060020a031663fdacd5766001546040518263ffffffff1660e060020a02815260040180828152602001915050600060405180830381600087803b156100005760325a03f115610000575050505b5b5b5050565b60015481565b600054600160a060020a031681565b60005433600160a060020a039081169116141561015f5760018190555b5b5b505600a165627a7a723058203a6085d73655660b8bc08e0f0c126e6542a76f5c99d55f37ac894ebc918894e60029",
-    "events": {},
-    "updated_at": 1486819144118,
-    "address": "0xe639eac8b7e8107c06ed41ec2a10ed05afda114c",
+    "unlinked_binary": "0x606060405234610000575b60025b60008190555b505b5b610546806100256000396000f300606060405236156100675763ffffffff60e060020a60003504166306c7dbb5811461006c5780633a07bfb31461008b57806350456660146100be578063613bf18a146100ff578063a495b1531461012f578063bfd58bdf14610194578063ec95bfe7146101cd575b610000565b34610000576100796101ef565b60408051918252519081900360200190f35b34610000576100aa600160a060020a03600435811690602435166101f5565b604080519115158252519081900360200190f35b34610000576100d7600160a060020a0360043516610231565b60408051600160a060020a039094168452602084019290925282820152519081900360600190f35b34610000576100aa600435600160a060020a036024351661025d565b604080519115158252519081900360200190f35b3461000057610079600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284375094965061028c95505050505050565b60408051918252519081900360200190f35b34610000576100aa600160a060020a03600435811690602435166044356064356102f3565b604080519115158252519081900360200190f35b3461000057610079600435610492565b60408051918252519081900360200190f35b60005481565b600082600160a060020a031633600160a060020a03161480610228575081600160a060020a031633600160a060020a0316145b90505b92915050565b6002602081905260009182526040909120805460018201549190920154600160a060020a039092169183565b6000828152600160208181526040808420600160a060020a0386168552909201905290205460ff165b92915050565b6000816040518082805190602001908083835b602083106102be5780518252601f19909201916020918201910161029f565b6001836020036101000a038019825116818451168082178552505050505050905001915050604051809103902090505b919050565b60008484600160a060020a03821615806103145750600160a060020a038116155b80610326575061032482826101f5565b155b80610342575080600160a060020a031682600160a060020a0316145b1561034c57610000565b6000600061038a6000368080601f0160208091040260200160405190810160405280939291908181526020018383808284375061028c945050505050565b9150610395826104a4565b90506000548110156103db5780600114156103d65760405182907f4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b90600090a25b610484565b60408051606081018252600160a060020a038a811680835260208084018c81528486018c81528f851660008181526002808652908990209751885473ffffffffffffffffffffffffffffffffffffffff191697169690961787559151600187015551949093019390935583518b81529283018a90528351909391927fc0e8693a712ee49068f452bfc718b4b43b15252c5c6403e371d956bcd9c588c392908290030190a3600194505b5b50505b5050949350505050565b60016020526000908152604090205481565b6000818152600160208181526040808420600160a060020a0333168552909201905281205460ff16156104d657610000565b506000818152600160208181526040808420600160a060020a03331685528084018352908420805460ff19168417905592849052819052815401908190555b9190505600a165627a7a7230582005fc70329a49fbf786589ab6cfeac608c65a287cb75e64455612c81656a7ad130029",
+    "events": {
+      "0xc0e8693a712ee49068f452bfc718b4b43b15252c5c6403e371d956bcd9c588c3": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "loss",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "throughput",
+            "type": "uint256"
+          }
+        ],
+        "name": "LogLinkAdded",
+        "type": "event"
+      },
+      "0x4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "key",
+            "type": "bytes32"
+          }
+        ],
+        "name": "OnConfirmationRequired",
+        "type": "event"
+      }
+    },
+    "updated_at": 1486819144125,
     "links": {}
   }
 };
@@ -562,7 +913,7 @@ var SolidityEvent = require("web3/lib/web3/event.js");
     Contract.links[name] = address;
   };
 
-  Contract.contract_name   = Contract.prototype.contract_name   = "Migrations";
+  Contract.contract_name   = Contract.prototype.contract_name   = "Graph";
   Contract.generated_with  = Contract.prototype.generated_with  = "3.2.0";
 
   // Allow people to opt-in to breaking changes now.
@@ -602,6 +953,6 @@ var SolidityEvent = require("web3/lib/web3/event.js");
   } else {
     // There will only be one version of this contract in the browser,
     // and we can use that.
-    window.Migrations = Contract;
+    window.Graph = Contract;
   }
 })();
