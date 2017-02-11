@@ -22,7 +22,7 @@
     
         <div class="container main-content">
             <h1>Map Network</h1>
-            <div id="container"></div>
+            <div id="sigma-container"></div>
         </div>
             
     <div class="footer"></div>
@@ -45,9 +45,9 @@
     <script src="js/sigmajs/plugins/sigma.parsers.json.min.js"></script>
     <script>
       sigma.parsers.json('data.json', {
-        container: 'container',
+        container: 'sigma-container',
         settings: {
-          defaultNodeColor: '#ec5148'
+          defaultNodeColor: '#4CAF50'
         }
       });
     </script>
