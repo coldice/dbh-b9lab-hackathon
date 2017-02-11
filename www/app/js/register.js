@@ -20,20 +20,25 @@ function isNameTaken(name) {
 function loadActions() {
     $("#btn_submit_register").click(function() {
         var pickedName = $("#txt_name").val();
+        var pickedPointType = $("#txt_point_type").val();
         var pickedLocation = $("#txt_location").val();
         $("#lbl_error").hide();
         return isNameTaken(pickedName)
-            .then(() => web3.eth.getFirstAccountPromise())
+            .then(web3.eth.getFirstAccountPromise)
             .then(account => {
                 $("#lbl_processing").show();
-                return registry.setNameTo(pickedName, account);
+                return registry.setInfoTo({
+                        name: pickedName,
+                        pointType: pickedPointType,
+                        location: pickedLocation
+                    }, account);
             })
-            .then(txHash => {
-                return web3.eth.getTransactionReceiptMined(txHash);
-            })
+            .then(web3.eth.getTransactionReceiptMined)
             .then(receipt => {
                 $("#lbl_processing").hide();
                 $("#lbl_name").html(pickedName);
+                $("#lbl_pointType").html(pickedPointType);
+                $("#lbl_location").html(pickedLocation);
             })
             .catch(error => {
                 console.error(error);
@@ -62,12 +67,12 @@ function updateUi() {
             }
             throw "No account found";
         })
-        .then(account => {
-            $("#lbl_account").html(account);
-            return registry.getNameOf(account);
-        })
-        .then(name => {
-            $("#lbl_name").html(web3.toUtf8(name));
+        .then(registry.getInfoOf)
+        .then(info => {
+            $("#lbl_account").html(info.address);
+            $("#lbl_name").html(info.name);
+            $("#lbl_point_type").html(info.pointType);
+            $("#lbl_location").html(info.location);
         })
         .catch(error => {
             console.error(error);
@@ -75,7 +80,7 @@ function updateUi() {
             if (error == "No account found") {
                 errorMessage = "There is no account";
             } else {
-                errorMessage = "Failed to fetch your current name";
+                errorMessage = "Failed to fetch your current info";
             }
             $("#lbl_error").html(errorMessage).show();
         })

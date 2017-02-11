@@ -2,9 +2,12 @@ const chai = require('chai');
 const spies = require('chai-spies');
 chai.use(spies);
 var expect = chai.expect;
-var web3, Registry;
+const Utils = require("./utils.js");
+var Web3 = require('web3');
+const web3 = new Web3();
+Utils.promisify(web3);
+var Registry;
 require('../app/js/registry.js');
-
 
 describe("basic calls", function() {
     var namesArray;
@@ -12,15 +15,12 @@ describe("basic calls", function() {
 
     beforeEach("prepare spies", function() {
 
-        namesObj = {"0x0": "testName"};
+        namesObj = {"0x0": [ web3.toHex("testName"), web3.toBigNumber(2), "somewhere1" ]};
         addressesObj = {"testName": "0x0"};
 
-        web3 = {
-            version: {
-                getNetworkPromise: () => new Promise(resolve => resolve("45"))
-            },
-            currentProvider: "currentProvider1"
-        };
+        web3.version.getNetworkPromise = () => new Promise(resolve => resolve("45"));
+        web3.currentProvider = "currentProvider1";
+
         Registry = {
             setProvider: function(provider) {},
             setNetwork: function(network) {},
@@ -28,21 +28,21 @@ describe("basic calls", function() {
                 return Registry._deployed;
             },
             _deployed: {
-                names: function(address) {
+                infos: function(address) {
                     return new Promise(function (resolve, reject) {
                         return resolve(namesObj[address]);
                     });
                 },
                 addresses: function(name) {
-                    var addressesArray = {"testName" : "0x0"};
+                    var addressesArray = { "testName": "0x0" };
                     return new Promise(function (resolve, reject) {
-                        return resolve(addressesObj[name]);
+                            return resolve(addressesObj[name]);
                         });
                 },
                 LogNameChanged: function(byWhat, json) {
                     return Registry._filter;
                 },
-                setName: {
+                setInfo: {
                     sendTransaction: function(newName, json) {
                         return new Promise(function (resolve, reject) {
                             return resolve("txHash");
@@ -83,16 +83,18 @@ describe("basic calls", function() {
 
     it("getNameOf called sub-functions as expected", function() {
         return registry.prepare(web3, Registry)
-            .then(() => {return registry.getNameOf("0x0")})
-            .then(function(name) {
-                expect(name).to.equal("testName");
+            .then(() => registry.getInfoOf("0x0"))
+            .then(function(info) {
+                expect(info.name).to.equal("testName");
+                expect(info.pointType).to.equal(2);
+                expect(info.location).to.equal("somewhere1");
                 expect(Registry.deployed).to.have.been.called.once;
             });
     });
 
     it("getAddressOf called sub-functions as expected", function() {
         return registry.prepare(web3, Registry)
-            .then(() => {return registry.getAddressOf("testName")})
+            .then(() => registry.getAddressOf("testName"))
             .then(function(address) {
                 expect(address).to.equal("0x0");
                 expect(Registry.deployed).to.have.been.called.once();
@@ -101,7 +103,7 @@ describe("basic calls", function() {
 
     it("setNameTo called sub-functions as expected", function() {
         return registry.prepare(web3, Registry)
-            .then(() => {return registry.setNameTo("newName", "0x0")})
+            .then(() => {return registry.setInfoTo("newName", "0x0")})
             .then(function(txHash) {
                 expect(txHash).to.equal("txHash");
             });

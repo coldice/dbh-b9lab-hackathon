@@ -1,28 +1,48 @@
 registry = {
     filter: null,
     registryContract: null,
+    web3: null,
 
     /**
      * Call this when web3 is ready.
      * pass along the RegistryContract EtherPudding.
      * @returns an empty promise.
      */
-    prepare: function(web3, registryContract) {
+    prepare: function(web3Object, registryContract) {
         registry.registryContract = registryContract;
-        registryContract.setProvider(web3.currentProvider);
-        return web3.version.getNetworkPromise()
+        registry.web3 = web3Object;
+        registryContract.setProvider(web3Object.currentProvider);
+        return web3Object.version.getNetworkPromise()
             .then(version => {
                 registryContract.setNetwork(version);
             });
     },
 
+    _infoIndices: {
+        name: 0,
+        pointType: 1,
+        location: 2
+    },
+
     /**
-     * Call this to get the name of an address
-     * returns a promise with the name.
+     * Call this to get the info related to an address
+     * returns a promise with the info in the form of:
+     * {
+     *     address: same as the requested address, hex string
+     *     name: the name associated to it, a text string
+     *     pointType: the point type, an integer
+     *     location: the location, a string
+     * }
      */
-    getNameOf: function(address) {
+    getInfoOf: function(address) {
         return registry.registryContract.deployed()
-            .names(address);
+            .infos(address)
+            .then(infos => ({
+                address: address,
+                name: registry.web3.toUtf8(infos[registry._infoIndices.name]),
+                pointType: infos[registry._infoIndices.pointType].toNumber(),
+                location: infos[registry._infoIndices.location]
+            }));
     },
 
     /**
@@ -35,13 +55,20 @@ registry = {
     },
 
     /**
-     * Call this to set the name to the address
+     * Call this to set the info to the address
+     * Expects info of the type: {
+     *     name: a 32-byte string at most
+     *     pointType: an integer
+     *     location: a string
+     * }
      * returns a promise with the transaction hash.
-     * the transaction is not mined yet.
+     * the transaction may not be mined yet.
      */
-    setNameTo: function(newName, address) {
+    setInfoTo: function(info, address) {
         return registry.registryContract.deployed()
-            .setName.sendTransaction(newName, { from: address, gas: 500000 });
+            .setInfo.sendTransaction(
+                info.name, info.pointType, info.location,
+                { from: address, gas: 500000 });
     },
 
     /**
@@ -51,7 +78,9 @@ registry = {
      *     some other less important arguments,
      *     args: {
      *         who: an address,
-     *         name: a name,
+     *         name: a name in string,
+     *         pointType: an integer,
+     *         location: a string
      *     }
      * }
      * @returns nothing.
@@ -63,7 +92,15 @@ registry = {
         if (registry.filter == null) {
             registry.filter = registry.registryContract.deployed().LogNameChanged(byWhat, { fromBlock: 0 });
         }
-        registry.filter.watch(callback);
+        registry.filter.watch((error, receivedEvent) => {
+            if (error) {
+                callback(error);
+            } else {
+                receivedEvent.args.name = registry.web3.toUtf8(receivedEvent.args.name);
+                receivedEvent.args.pointType = receivedEvent.args.pointType.toNumber();
+                callback(error, receivedEvent);
+            }
+        });
     },
 
     /**
