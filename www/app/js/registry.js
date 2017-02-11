@@ -18,6 +18,13 @@ registry = {
             });
     },
 
+    pointTypes: {
+        0: "Super High Voltage",
+        1: "High Voltage",
+        2: "Medium Voltage",
+        3: "Low Voltage"
+    },
+
     /**
      * When information comes back as an array, these are the 
      * indices to pick the information.
