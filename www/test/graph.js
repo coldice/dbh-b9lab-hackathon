@@ -4,6 +4,7 @@ chai.use(spies);
 var expect = chai.expect;
 
 require('../app/js/graph.js');
+require('../app/js/registry.js');
 
 describe("understand spies", function() {
 
@@ -39,7 +40,7 @@ describe("understand spies", function() {
 
 describe("basic calls", function() {
 
-    var web3, Graph;
+    var web3, Graph, Registry;
 
     beforeEach("prepare spies", function() {
         web3 = {
@@ -70,19 +71,37 @@ describe("basic calls", function() {
                 return Graph._deployed;
             })
         };
+
+        Registry = {
+            deployed: chai.spy(() => Registry._deployed),
+            _deployed: {
+                infos: chai.spy(address => new Promise(resolve => resolve(namesObj[address]))),
+                addresses: chai.spy(name => new Promise(resolve => resolve(addressesObj[name])))
+            }
+        };
     });
 
     it("prepare called sub-functions as expected", function() {
-        graph.prepare(web3, Graph);
+        graph.prepare(web3, Graph, Registry);
         expect(graph.web3).to.equal(web3);
         expect(graph.graphContract).to.equal(Graph);
+        expect(graph.registryContract).to.equal(Registry);
     });
 
     describe("and is already prepared", function() {
 
         beforeEach("prepare", function() {
-            graph.prepare(web3, Graph);
+            graph.prepare(web3, Graph, Registry);
         })
+
+        it("getLinkInfo called subfunctions as expected", function() {
+            return graph.getLinkInfo("0x01", "0x02")
+                .then(info => {
+                    expect(Graph.deployed).to.have.been.called.once();
+                    expect(Registry.deployed).to.have.been.called.once();
+                    // TODO test more... :(
+                })
+        });
 
         it("submitLink called sub-functions as expected", function() {
             return graph.submitLink({
