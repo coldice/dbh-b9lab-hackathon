@@ -17,6 +17,7 @@ function updateUi() {
         })
 }
 //lbl_account
+//txt_address
 
 // add an appropriate event listener
 window.addEventListener("web3Ready", updateUi);

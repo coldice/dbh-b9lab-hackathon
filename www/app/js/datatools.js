@@ -1,5 +1,6 @@
 function autoSetup(obj) {
-    setupAutoButtons(obj);
+    //setupAutoButtons(obj);
+    //setupAutoForms(obj);
 }
 
 function setupAutoButtons(obj) {
@@ -17,6 +18,13 @@ function addButtonAction(btn) {
         btn.click(function() {
             performGet($(this));
         });
+    }
+}
+
+function setupAutoForms(obj) {
+    var params = {};
+    if (window.location.search != "") {
+        params = 
     }
 }
 
