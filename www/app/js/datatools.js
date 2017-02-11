@@ -24,7 +24,7 @@ function addButtonAction(btn) {
 function setupAutoForms(obj) {
     var params = {};
     if (window.location.search != "") {
-        params = 
+        // params = 
     }
 }
 
