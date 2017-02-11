@@ -31,11 +31,17 @@
         <form class="form-signin">
             <h2 class="form-signin-heading">Account:<span id="lbl_account"></span></h2>
             
-            <input type="name" id="txt_name" class="form-control" placeholder="Name">
-            <input type="number" id="txt_point_type" class="form-control" placeholder="Point Type">
-            <input type="location" id="txt_location" class="form-control" placeholder="Location">
+            <label for="txt_name">Name</label>
+            <input type="name" name="txt_name" id="txt_name" class="form-control" placeholder="Name">
+
+            <label for="txt_point_type">End Point Type</label>
+            <input type="number" name="txt_point_type" id="txt_point_type" class="form-control" placeholder="Point Type">
+
+            <label for="txt_location">Location</label>
+            <input type="location" name="txt_location" id="txt_location" class="form-control" placeholder="Location">
             
             <button id="btn_submit_register" class="btn btn-lg btn-primary btn-block" type="button">Submit</button>
+            
             <p style="display:none;" id="lbl_error">xxx</p>
             <p style="display:none;" id="lbl_processing">Processing</p>
         </form>
