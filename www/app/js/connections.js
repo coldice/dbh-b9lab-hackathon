@@ -60,7 +60,6 @@ function createEmptyConnectionRow() {
  * }
  */
 function populateConnectionRow(trObject, connectionInfo) {
-    console.log(connectionInfo);
     trObject.attr({
         "data-from": connectionInfo.from,
         "data-to": connection.to
