@@ -25,11 +25,12 @@ function getUrlParams(strParams) {
     var params = {};
     
     // TODO: unescape
-    $.each(strParams.split("&"), function(str) {
+    $.each(strParams.split("&"), function() {
         // should be key=val
-        param = str.split("=");
+        console.log("setup " + strParams);
+        param = strParams.split("=");
         if (param.length != 2) return;
-        params[param[0]] = params[1];
+        params[param[0]] = param[1];
     });
 
     return params;
@@ -38,13 +39,21 @@ function getUrlParams(strParams) {
 function setupAutoForms(obj) {
     if (window.location.search != "") {
         var params = getUrlParams(window.location.search.substr(1));
-        if (params.length > 0) {
-            autoFields = obj.find("[data-auto-param]");
-            $.each(params, function(key, val) {
-                
-            })
+        console.log("in:");
+        console.log(params);
+        console.log(params.length);
 
-        }
+        autoFields = obj.find("[data-auto-param]");
+        $.each(params, function(key, val) {
+            console.log("looking for " + "[data-auto-param="+key+"]");
+            console.log("in:");
+            console.log()
+            autoFields.find("[data-auto-param="+key+"]").each(function() {
+                console.log($(this));
+                console.log(val);
+                $(this).val(val);
+            })
+        });
     }
 }
 
