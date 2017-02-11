@@ -8,8 +8,6 @@ function isNameTaken(name) {
                         // That's fine, it is available
                     } else if (whoElse != account) {
                         throw "Name already taken";
-                    } else if (whoElse == account) {
-                        throw "Name already set";
                     } else {
                         // That's fine should be possible to set it.
                     }
@@ -48,8 +46,6 @@ function loadActions() {
                     errorMessage = "There is no account";
                 } else if(error == "Name already taken") {
                     errorMessage = "Name already taken by another: " + pickedName;
-                } else if(error == "Name already set") {
-                    errorMessage = "Your address is already set to this name";
                 } else {
                     errorMessage = "Failed to set the name";
                 }

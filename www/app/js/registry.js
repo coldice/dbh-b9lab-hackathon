@@ -18,6 +18,10 @@ registry = {
             });
     },
 
+    /**
+     * When information comes back as an array, these are the 
+     * indices to pick the information.
+     */
     _infoIndices: {
         name: 0,
         pointType: 1,

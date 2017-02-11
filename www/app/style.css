@@ -25,6 +25,17 @@ body {
     max-height: 60px;
 }
 
+#map {
+    height: 400px;
+    width: 100%;
+}
+
+#container {
+    max-width: 400px;
+    height: 400px;
+    margin: auto;
+  }
+
 
 
 /*------------- Sticky footer styles------------- */
