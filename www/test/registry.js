@@ -25,34 +25,35 @@ describe("basic calls", function() {
             setProvider: function(provider) {},
             setNetwork: function(network) {},
             deployed: function() {
-            	return {
-            		names: function(address) {
-	            		return new Promise(function (resolve, reject) {
-	            			return resolve(namesObj[address]);
-	            		});
-	            	},
-	            	addresses: function(name) {
-	        		var addressesArray = {"testName" : "0x0"};
-	           		return new Promise(function (resolve, reject) {
-	           			return resolve(addressesObj[name]);
-	           			});
-	           		},
-	           		LogNameChanged: function(byWhat, json) {
-	           			return {
-	           				watch: function(callback) {},
-	           				stopWatching: function() {}
-	           			}
-	           		},
-					setName: {
-           				sendTransaction: function(newName, json) {
-           					return new Promise(function (resolve, reject) {
-           						return resolve("txHash");
-           					});
-		           		}
-	    	        }
+            	return Registry._deployed;
+            },
+            _deployed: {
+            	names: function(address) {
+	            	return new Promise(function (resolve, reject) {
+	            		return resolve(namesObj[address]);
+	            	});
+	            },
+	            addresses: function(name) {
+	        	var addressesArray = {"testName" : "0x0"};
+	           	return new Promise(function (resolve, reject) {
+	           		return resolve(addressesObj[name]);
+	           		});
+	           	},
+	           	LogNameChanged: function(byWhat, json) {
+	           		return Registry._filter;
+	           	},
+				setName: {
+           			sendTransaction: function(newName, json) {
+           				return new Promise(function (resolve, reject) {
+           					return resolve("txHash");
+           				});
+		            }
 	    	    }
-	        },
-          	filter: null
+	    	},
+	        _filter: {
+          		watch: function(callback) {},
+	           	stopWatching: function() {}
+			}
         };
 	
     
@@ -60,9 +61,15 @@ describe("basic calls", function() {
         Registry.setProvider = chai.spy(Registry.setProvider);
         Registry.setNetwork = chai.spy(Registry.setNetwork);
         Registry.deployed = chai.spy(Registry.deployed);
+        Registry._filter.watch = chai.spy(Registry._filter.watch);
+        Registry._filter.stopWatching = chai.spy(Registry._filter.stopWatching);
+        Registry._deployed.LogNameChanged = chai.spy(Registry._deployed.LogNameChanged); 
         expect(web3.version.getNetworkPromise).to.be.spy;
         expect(Registry.setProvider).to.be.spy;
         expect(Registry.setNetwork).to.be.spy;
+        expect(Registry._filter.watch).to.be.spy;
+        expect(Registry._filter.stopWatching).to.be.spy;
+        expect(Registry._deployed.LogNameChanged).to.be.spy;
     });
 
     it("prepare called sub-functions as expected", function() {
@@ -104,13 +111,20 @@ describe("basic calls", function() {
     	registry.prepare(web3, Registry)
     		.then(() => {return registry.listenToUpdates(() => {}, {} )})
     		.then(() => {
+    			expect(Registry._deployed.LogNameChanged).to.have.been.called.once.with({}, {fromBlock: 0});
     			expect(Registry.deployed).to.have.been.called.once();
+    			expect(Registry._filter.watch).to.have.been.called.once();
     		});
-    	//TODO : complete it with stuff 
     });	
 
     it("stopListeningToUpdates called sub-functions as expected", function() {
-
+    	registry.filter = null;
+    	return registry.prepare(web3, Registry)
+    		.then(() => {return registry.listenToUpdates(() => {}, {} )})
+    		.then(() => {return registry.stopListeningToUpdates()})
+    		.then(() => {
+    			expect(Registry._filter.stopWatching).to.have.been.called.once();
+    		});
 	});
 
 
