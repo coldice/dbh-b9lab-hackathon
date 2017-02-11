@@ -85,12 +85,9 @@ registry = {
      * }
      * @returns nothing.
      */
-    listenToUpdates: function(callback, byWhat) {
-        if (typeof byWhat == "undefined") {
-            byWhat = {};
-        }
+    listenToUpdates: function(callback) {
         if (registry.filter == null) {
-            registry.filter = registry.registryContract.deployed().LogNameChanged(byWhat, { fromBlock: 0 });
+            registry.filter = registry.registryContract.deployed().LogNameChanged({}, { fromBlock: 0 });
         }
         registry.filter.watch((error, receivedEvent) => {
             if (error) {

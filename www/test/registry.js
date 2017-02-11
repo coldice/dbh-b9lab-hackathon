@@ -15,55 +15,32 @@ describe("basic calls", function() {
 
     beforeEach("prepare spies", function() {
 
-        namesObj = {"0x0": [ web3.toHex("testName"), web3.toBigNumber(2), "somewhere1" ]};
-        addressesObj = {"testName": "0x0"};
+        namesObj = {
+            "0x0": [ web3.toHex("testName"), web3.toBigNumber(2), "somewhere1" ]
+        };
+        addressesObj = { "testName": "0x0" };
 
-        web3.version.getNetworkPromise = () => new Promise(resolve => resolve("45"));
+        web3.version.getNetworkPromise = chai.spy(() => new Promise(resolve => resolve("45")));
         web3.currentProvider = "currentProvider1";
 
         Registry = {
-            setProvider: function(provider) {},
-            setNetwork: function(network) {},
-            deployed: function() {
-                return Registry._deployed;
-            },
+            setProvider: chai.spy(provider => {}),
+            setNetwork: chai.spy(network => {}),
+            deployed: chai.spy(() => Registry._deployed),
             _deployed: {
-                infos: function(address) {
-                    return new Promise(function (resolve, reject) {
-                        return resolve(namesObj[address]);
-                    });
-                },
-                addresses: function(name) {
-                    var addressesArray = { "testName": "0x0" };
-                    return new Promise(function (resolve, reject) {
-                            return resolve(addressesObj[name]);
-                        });
-                },
-                LogNameChanged: function(byWhat, json) {
-                    return Registry._filter;
-                },
+                infos: address => new Promise(resolve => resolve(namesObj[address])),
+                addresses: name => new Promise(resolve => resolve(addressesObj[name])),
+                LogNameChanged: chai.spy(() => Registry._filter),
                 setInfo: {
-                    sendTransaction: function(newName, json) {
-                        return new Promise(function (resolve, reject) {
-                            return resolve("txHash");
-                        });
-                    }
+                    sendTransaction: () => new Promise(resolve => resolve("txHash"))
                 }
             },
             _filter: {
-                watch: function(callback) {},
-                stopWatching: function() {}
+                watch: chai.spy(callback => {}),
+                stopWatching: chai.spy(() => {})
             }
         };
     
-    
-        web3.version.getNetworkPromise = chai.spy(web3.version.getNetworkPromise);
-        Registry.setProvider = chai.spy(Registry.setProvider);
-        Registry.setNetwork = chai.spy(Registry.setNetwork);
-        Registry.deployed = chai.spy(Registry.deployed);
-        Registry._filter.watch = chai.spy(Registry._filter.watch);
-        Registry._filter.stopWatching = chai.spy(Registry._filter.stopWatching);
-        Registry._deployed.LogNameChanged = chai.spy(Registry._deployed.LogNameChanged); 
         expect(web3.version.getNetworkPromise).to.be.spy;
         expect(Registry.setProvider).to.be.spy;
         expect(Registry.setNetwork).to.be.spy;
@@ -88,14 +65,14 @@ describe("basic calls", function() {
                 expect(info.name).to.equal("testName");
                 expect(info.pointType).to.equal(2);
                 expect(info.location).to.equal("somewhere1");
-                expect(Registry.deployed).to.have.been.called.once;
+                expect(Registry.deployed).to.have.been.called.once();
             });
     });
 
     it("getAddressOf called sub-functions as expected", function() {
         return registry.prepare(web3, Registry)
             .then(() => registry.getAddressOf("testName"))
-            .then(function(address) {
+            .then(address => {
                 expect(address).to.equal("0x0");
                 expect(Registry.deployed).to.have.been.called.once();
             });
@@ -103,15 +80,16 @@ describe("basic calls", function() {
 
     it("setNameTo called sub-functions as expected", function() {
         return registry.prepare(web3, Registry)
-            .then(() => {return registry.setInfoTo("newName", "0x0")})
-            .then(function(txHash) {
+            .then(() => registry.setInfoTo("newName", "0x0"))
+            .then(txHash => {
                 expect(txHash).to.equal("txHash");
             });
     });
 
     it("listenToUpdates called sub-functions as expected", function() {
+        registry.filter = null;
         registry.prepare(web3, Registry)
-            .then(() => {return registry.listenToUpdates(() => {}, {} )})
+            .then(() => registry.listenToUpdates(() => {}))
             .then(() => {
                 expect(Registry._deployed.LogNameChanged).to.have.been.called.once.with({}, {fromBlock: 0});
                 expect(Registry.deployed).to.have.been.called.once();
@@ -122,12 +100,11 @@ describe("basic calls", function() {
     it("stopListeningToUpdates called sub-functions as expected", function() {
         registry.filter = null;
         return registry.prepare(web3, Registry)
-            .then(() => {return registry.listenToUpdates(() => {}, {} )})
-            .then(() => {return registry.stopListeningToUpdates()})
+            .then(() => registry.listenToUpdates(() => {}))
+            .then(() => registry.stopListeningToUpdates())
             .then(() => {
                 expect(Registry._filter.stopWatching).to.have.been.called.once();
             });
     });
-
 
 });
