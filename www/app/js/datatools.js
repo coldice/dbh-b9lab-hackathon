@@ -21,10 +21,30 @@ function addButtonAction(btn) {
     }
 }
 
-function setupAutoForms(obj) {
+function getUrlParams(strParams) {
     var params = {};
+    
+    // TODO: unescape
+    $.each(strParams.split("&"), function(str) {
+        // should be key=val
+        param = str.split("=");
+        if (param.length != 2) return;
+        params[param[0]] = params[1];
+    });
+
+    return params;
+}
+
+function setupAutoForms(obj) {
     if (window.location.search != "") {
-        // params = 
+        var params = getUrlParams(window.location.search.substr(1));
+        if (params.length > 0) {
+            autoFields = obj.find("[data-auto-param]");
+            $.each(params, function(key, val) {
+                
+            })
+
+        }
     }
 }
 
@@ -36,7 +56,7 @@ function performGet(btn) {
 }
 
 getInputElements = function(obj) {
-    obj.find("input").each(obj, function(obj) {
+    obj.find("input").each(idx, function() {
 
     })
 }
