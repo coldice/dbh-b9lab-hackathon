@@ -32,9 +32,7 @@ contract('Registry', function(accounts) {
 
         it("should be able to register my name", function() {
             return instance.setInfo("userName1", 2, "somewhere1", { from: user1 })
-                .then(txHash => {
-                    return web3.eth.getTransactionReceiptMined(txHash);
-                })
+                .then(web3.eth.getTransactionReceiptMined)
                 .then(receipt => {
                     var receivedEvent = instance.LogInfoChanged().formatter(receipt.logs[0])
                     assert.strictEqual(receivedEvent.args.who, user1, "should be sender");
@@ -56,15 +54,11 @@ contract('Registry', function(accounts) {
 
         it("should be able to set my name back to empty string", function() {
             return instance.setInfo("userName1", 3, "somewhere1", { from: user1 })
-                .then(txHash => {
-                    return web3.eth.getTransactionReceiptMined(txHash);
-                })
+                .then(web3.eth.getTransactionReceiptMined)
                 .then(receipt => {
                     return instance.setInfo("", 4, "somewhere2", { from: user1 });
                 })
-                .then(txHash => {
-                    return web3.eth.getTransactionReceiptMined(txHash);
-                })
+                .then(web3.eth.getTransactionReceiptMined)
                 .then(receipt => {
                     var receivedEvent = instance.LogInfoChanged().formatter(receipt.logs[0])
                     assert.strictEqual(receivedEvent.args.who, user1, "should be sender");
@@ -91,9 +85,7 @@ contract('Registry', function(accounts) {
                     instance.setInfo("userName1", 4, "somewhere1", { from: user1 }),
                     instance.setInfo("userName2", 5, "somewhere2", { from: user2 })
                 ])
-                .then(txHashes => {
-                    return web3.eth.getTransactionReceiptMined(txHashes);
-                })
+                .then(web3.eth.getTransactionReceiptMined)
                 .then((receipts) => {
                     var receivedEvent1 = instance.LogInfoChanged().formatter(receipts[0].logs[0]);
                     var receivedEvent2 = instance.LogInfoChanged().formatter(receipts[1].logs[0]);
@@ -132,15 +124,35 @@ contract('Registry', function(accounts) {
             return Registry.new()
                 .then(created => {
                     instance = created;
-                    instance.setInfo("userName1", 4, "somewhere1", {from: user1});
+                    instance.setInfo("userName1", 4, "somewhere1", { from: user1 });
                 });
         });
 
-        it("should be able to change my existing name without changing type or location", function() {
-            return instance.setInfo("newUserName1", 4, "somewhere1", {from: user1})
-                .then(txHash => {
-                    return web3.eth.getTransactionReceiptMined(txHash);
+        it("should be possible to change other info with name unchanged", function() {
+            return instance.setInfo("userName1", 5, "somewhere2", { from: user1 })
+                .then(web3.eth.getTransactionReceiptMined)
+                .then(receipt => {
+                    var receivedEvent = instance.LogInfoChanged().formatter(receipt.logs[0])
+                    assert.strictEqual(receivedEvent.args.who, user1, "should be sender");
+                    assert.strictEqual(web3.toUtf8(receivedEvent.args.name), "userName1", "should be the new samename");
+                    assert.strictEqual(receivedEvent.args.pointType.toNumber(), 5, "should be the new pointType");
+                    assert.strictEqual(receivedEvent.args.location, "somewhere2", "should be the new location");
+                    return Promise.all([
+                            instance.infos(user1),
+                            instance.addresses("userName1")
+                        ]);
                 })
+                .then(results => {
+                    assert.strictEqual(web3.toUtf8(results[0][0]), "userName1", "should be same name");
+                    assert.strictEqual(results[0][1].toNumber(), 5, "should change pointType");
+                    assert.strictEqual(results[0][2], "somewhere2", "should change location");
+                    assert.strictEqual(results[1], user1, "should be still address");
+                })
+        });
+
+        it("should be able to change my existing name without changing type or location", function() {
+            return instance.setInfo("newUserName1", 4, "somewhere1", { from: user1 })
+                .then(web3.eth.getTransactionReceiptMined)
                 .then(receipt => {
                     var receivedEvent = instance.LogInfoChanged().formatter(receipt.logs[0])
                     assert.strictEqual(receivedEvent.args.who, user1, "should be sender");
@@ -164,7 +176,7 @@ contract('Registry', function(accounts) {
 
         it("should refuse to overwrite the name if someone else", function() {
             return Extensions.expectedExceptionPromise(
-                () => instance.setInfo("userName1", 4, "somewhere2", {from: user2}), 
+                () => instance.setInfo("userName1", 4, "somewhere2", { from: user2 }), 
                 3000000, 3000000);
         });
 
@@ -176,19 +188,17 @@ contract('Registry', function(accounts) {
             return Registry.new()
                 .then(created => {
                     instance = created;
-                    instance.setInfo("userName1", 5, "somewhere1", {from: user1});
-                    instance.setInfo("userName2", 6, "somewhere2", {from: user2});
+                    instance.setInfo("userName1", 5, "somewhere1", { from: user1 });
+                    instance.setInfo("userName2", 6, "somewhere2", { from: user2 });
                 });
         });
 
         it("should be able to possible for both to set name back to empty string", function() {
             return Promise.all([
-                instance.setInfo("", 0, "", { from: user1 }),
-                instance.setInfo("", 0, "", { from: user2 })
+                    instance.setInfo("", 0, "", { from: user1 }),
+                    instance.setInfo("", 0, "", { from: user2 })
                 ])
-                .then(txHashes => {
-                    return web3.eth.getTransactionReceiptMined(txHashes);
-                })
+                .then(web3.eth.getTransactionReceiptMined)
                 .then((receipts) => {
                     var receivedEvent1 = instance.LogInfoChanged().formatter(receipts[0].logs[0]);
                     var receivedEvent2 = instance.LogInfoChanged().formatter(receipts[1].logs[0]);
