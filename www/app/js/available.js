@@ -1,12 +1,10 @@
 function updateUi() {
-    var tbodyObjet = $("tbody#available_endpoint");
-    Registry.deployed().LogInfoChanged({}, { fromBlock: 514639 })
-        .watch((error, receivedEvent) => {
+    var tbodyObject = $("tbody#available_endpoint");
+    registry.listenToUpdates((error, receivedEvent) => {
             if (error) {
                 console.error(error);
             } else {
-                console.log(receivedEvent);
-                findOrCreateAndPopulateEndpointRow(tbody, receivedEvent.args);
+                findOrCreateAndPopulateEndpointRow(tbodyObject, receivedEvent.args);
             }
         });
 }
@@ -38,7 +36,7 @@ function createEmptyEndpointRow() {
  *     who: hex string,
  *     name: string,
  *     pointType: number,
- *     location: string   
+ *     location: string,
  *     pointIndex : number (optional)
  * }
  */
@@ -50,9 +48,8 @@ function populateEndpointRow(trObject, endpointInfo) {
     trObject.find("td.pointName").html(endpointInfo.name);
     trObject.find("td.pointType").html(endpointInfo.pointType); 
     trObject.find("td.location").html(endpointInfo.location);
-    trObject.find("button.add").attr("data-param", "address="+endpointInfo.who);
+    trObject.find("button.add").attr("data-param", "address=" + endpointInfo.who);
 }
-
 
 /**
  * Finds the pertinent row in tableObject, and passes it on to populateEndpointRow.
@@ -66,10 +63,10 @@ function populateEndpointRow(trObject, endpointInfo) {
  */
 function findOrCreateAndPopulateEndpointRow(tbodyObject, endpointInfo) {
     var trFound = tbodyObject.find("tr[data-address=" + endpointInfo.who + "]");
-    if (trFound.size() == 0) {
+    if (trFound.length == 0) {
         trFound = createEmptyEndpointRow().appendTo(tbodyObject);
-        endpointInfo.pointIndex = tbodyObjet.find("tr").size();
-    } else if (trFound.size() > 1) {
+        endpointInfo.pointIndex = tbodyObject.find("tr").length;
+    } else if (trFound.length > 1) {
         throw "Not expected to find more than one such row";
     }
     populateEndpointRow(trFound, endpointInfo);
@@ -77,4 +74,9 @@ function findOrCreateAndPopulateEndpointRow(tbodyObject, endpointInfo) {
 }
 
 // add an appropriate event listener
-window.addEventListener("web3Ready", updateUi);
+window.addEventListener("web3Ready", () => {
+    // Careful! For some reason, we need this timeout for the events to not fail.
+    setTimeout(function() {
+        updateUi();
+    }, 100);
+});
