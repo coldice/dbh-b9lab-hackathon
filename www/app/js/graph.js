@@ -1,30 +1,61 @@
 graph = {
     filterConfirmationRequired: null,
     filterLinkAdded: null,
+    web3: null,
     graphContract: null,
-
-    sampleSubmitLinkObject: {
-        from: "0x0001020304050607080900010203040506070809",
-        to: "0x0908070605040302010009080706050403020100",
-        loss: 1000, // 1%
-        throughput: 1000000 // 1 kW
-    },
 
     /**
      * Call this when web3 is ready.
-     * @returns an empty promise.
+     * @returns nothing.
      */
-    prepare: function(web3, graphContract) {
+    prepare: function(web3Object, graphContract) {
+        graph.web3 = web3Object;
         graph.graphContract = graphContract;
-        graphContract.setProvider(web3.currentProvider);
-        return web3.version.getNetworkPromise()
-            .then(version => {
-                graphContract.setNetwork(version);
+    },
+
+    _infoIndices: {
+        loss: 0,
+        throughput: 1
+    },
+
+    /**
+     * Returns a promise that resolves to the "from-to" link info in the form of: {
+     *     from: "0x123",
+     *     to: "0x123",
+     *     loss: 1000, an integer such that 1% is encoded as 1000
+     *     throughput: an integer The unit is microWatt.
+     *     nameFrom: string,
+     *     nameTo: string,
+     *     typeFrom: integer of endpoint type,
+     *     typeTo: integer of endpoint type,
+     * }
+     */
+    getLinkInfo: function(from, to) {
+        return Promise.all([
+                graph.graphContract.deployed().directedLinks(from, to),
+                registry.getInfoOf(from),
+                registry.getInfoOf(to)
+            ])
+            .then(infos => {
+                var info = infos[0];
+                info.loss = info[graph._infoIndices.loss].toNumber();
+                info.throughput = info[graph._infoIndices.throughput].toNumber();
+                info.nameFrom = infos[1].name;
+                info.typeFrom = infos[1].pointType;
+                info.nameTo = infos[2].name;
+                info.typeTo = infos[2].pointType;
+                return info;
             });
     },
 
     /**
-     * Takes a link as per the sample above, and the address of the sender.
+     * Takes a link info, and the address of the sender.
+     * submitLinkObject is like: {
+     *     from: "0x0001020304050607080900010203040506070809",
+     *     to: "0x0908070605040302010009080706050403020100",
+     *     loss: an integer 1000, // 1%
+     *     throughput: an integer 1000000 // 1 kW
+     * }
      * returns a promise that resolves to a txHash. The tx is not mined.
      */
     submitLink: function(submitLinkObject, address) {
@@ -34,6 +65,26 @@ graph = {
             submitLinkObject.loss,
             submitLinkObject.throughput,
             { from: address, gas: 1000000 });
+    },
+
+    _richLinkAddedCallback: (innerCallbackLinkAdded) => (error, receivedEvent) => {
+        if (!error) {
+            receivedEvent.args.loss = receivedEvent.args.loss.toNumber();
+            receivedEvent.args.throughput = receivedEvent.args.throughput.toNumber();
+            return Promise.all([
+                    registry.getInfoOf(receivedEvent.args.from),
+                    registry.getInfoOf(receivedEvent.args.to)
+                ])
+                .then(infos => {
+                    receivedEvent.args.nameFrom = infos[0].name;
+                    receivedEvent.args.typeFrom = infos[0].pointType;
+                    receivedEvent.args.nameTo = infos[1].name;
+                    receivedEvent.args.typeTo = infos[1].pointType;
+                    innerCallbackLinkAdded(error, receivedEvent);
+                })
+        } else {
+            innerCallbackLinkAdded(error, receivedEvent);
+        }
     },
 
     /**
@@ -59,22 +110,16 @@ graph = {
      */
     listenToUpdates: function(
             callbackConfirmationRequired, callbackLinkAdded) {
-        if (typeof requiredByWhat == "undefined") {
-            requiredByWhat = {};
-        }
-        if (typeof addedByWhat == "undefined") {
-            addedByWhat = {};
-        }
         if (graph.filterConfirmationRequired == null) {
             graph.filterConfirmationRequired = graph.graphContract.deployed()
-                .OnConfirmationRequired({}, { fromBlock: 0 });
+                .OnConfirmationRequired({}, { fromBlock: 516462 });
         }
         if (graph.filterLinkAdded == null) {
             graph.filterLinkAdded = graph.graphContract.deployed()
-                .LogLinkAdded({}, { fromBlock: 0 });
+                .LogLinkAdded({}, { fromBlock: 516462 });
         }
         graph.filterConfirmationRequired.watch(callbackConfirmationRequired);
-        graph.filterLinkAdded.watch(callbackLinkAdded);
+        graph.filterLinkAdded.watch(graph._richLinkAddedCallback(callbackLinkAdded));
     },
 
     /**

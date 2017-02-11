@@ -22,6 +22,6 @@ contract Migrations {
   }
 }
 
-address: 0x93e23dadd4ae706181c2a2d9cf1caec7fbbf31e0
+address: 0xdb0e37c1937b54f9b552613716940019a304ce9c
 compiler: 0.4.8
 optimisation: true

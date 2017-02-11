@@ -20,6 +20,7 @@
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/utils.js"></script>
     <script type="text/javascript" src="js/registry.js"></script>
+    <script type="text/javascript" src="js/graph.js"></script>
     <script type="text/javascript" src="js/prepare.js"></script>
     <script type="text/javascript" src="js/connections.js"></script>
     <script type="text/javascript" src="js/datatools.js"></script>
@@ -33,27 +34,39 @@
         
         <div class="card">
             <div class="card-block">
-                <h1>List of Available Connections</h1>
+                <h1>List of Links</h1>
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Point Type</th>
-                            <th>Location</th>
+                            <th class="text-center"></th>
+                            <th colspan="2" class="text-center">From</th>
+                            <th colspan="2" class="text-center">To</th>
+                            <th colspan="2" class="text-center">Info</th>
                             <th></th>
+                        </tr><tr>
+                            <th class="text-center">#</th>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">Point Type</th>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">Point Type</th>
+                            <th class="text-center">Throughput</th>
+                            <th class="text-center">Loss</th>
+                            <th class="text-center"></th>
+                        
                         </tr>
                     </thead>
                     <tbody id="connection">
-                        <tr class="data-row" data-from="0x023234234" data-to="0x023234235" style="display:none;">
-                            <th class="index" scope="row">1</th>
-                            <td class="pointNameA">User A</td>
-                            <td class="pointTypeA">High Voltage</td>
-                            <td class="pointNameB">User B</td>
-                            <td class="pointTypeB">Low Voltage</td>
+                        <!--tr class="data-row" data-from="0x023234234" data-to="0x023234235" style="display:none;">
+                            <th class="linkIndex" scope="row">1</th>
+                            <td class="nameFrom">User A</td>
+                            <td class="typeFrom">High Voltage</td>
+                            <td class="nameTo">User B</td>
+                            <td class="typeTo">Low Voltage</td>
+                            <td class="Loss">10%</td>
+                            <td class="Throughput">Throughput</td>
                             <td class="text-center"><button class="btn btn-primary remove" type="button" data-type="autoButton" data-action="get" data-target="confirm.html" data-from="0x023234234" data-to="0x023234235">Confirm</button>
                             <button class="btn btn-primary add" type="button" data-type="autoButton" data-action="get" data-target="remove.html" data-from="0x023234234" data-to="0x023234235">Remove</button></td>
-                        </tr>
+                        </tr-->
                     </tbody>
                 </table>
             </div>

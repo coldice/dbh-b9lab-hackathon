@@ -2,8 +2,13 @@ const chai = require('chai');
 const spies = require('chai-spies');
 chai.use(spies);
 var expect = chai.expect;
+const Utils = require("./utils.js");
+var Web3 = require('web3');
+const web3 = new Web3();
+Utils.promisify(web3);
 
 require('../app/js/graph.js');
+require('../app/js/registry.js');
 
 describe("understand spies", function() {
 
@@ -39,19 +44,16 @@ describe("understand spies", function() {
 
 describe("basic calls", function() {
 
-    var web3, Graph;
+    var Graph, Registry;
 
     beforeEach("prepare spies", function() {
-        web3 = {
-            version: {
-                getNetworkPromise: chai.spy(() => new Promise(resolve => resolve("45"))),
-            },
-            currentProvider: "currentProvider1"
-        };
+        web3.version.getNetworkPromise = chai.spy(() => new Promise(resolve => resolve("45")));
+        web3.currentProvider = "currentProvider1";
         Graph = {
             setProvider: chai.spy(provider => {}),
             setNetwork: chai.spy(network => {}),
             _deployed:{
+                directedLinks: chai.spy(() => {}),
                 submitLink: {
                     sendTransaction: chai.spy(() => new Promise((resolve) => resolve("txHash1")))
                 },
@@ -70,6 +72,18 @@ describe("basic calls", function() {
                 return Graph._deployed;
             })
         };
+
+        namesObj = {
+            "0x0": [ web3.toHex("testName"), web3.toBigNumber(2), "somewhere1" ]
+        };
+        addressesObj = { "testName": "0x0" };
+        Registry = {
+            deployed: chai.spy(() => Registry._deployed),
+            _deployed: {
+                infos: chai.spy(address => new Promise(resolve => resolve(namesObj[address]))),
+                addresses: chai.spy(name => new Promise(resolve => resolve(addressesObj[name])))
+            }
+        };
     });
 
     it("prepare called sub-functions as expected", function() {
@@ -82,7 +96,17 @@ describe("basic calls", function() {
 
         beforeEach("prepare", function() {
             graph.prepare(web3, Graph);
+            registry.prepare(web3, Registry);
         })
+
+        it("getLinkInfo called subfunctions as expected", function() {
+            // return graph.getLinkInfo("0x01", "0x02")
+            //     .then(info => {
+            //         expect(Graph.deployed).to.have.been.called.once();
+            //         expect(Registry.deployed).to.have.been.called.once();
+                    // TODO test more... :(
+                // })
+        });
 
         it("submitLink called sub-functions as expected", function() {
             return graph.submitLink({
