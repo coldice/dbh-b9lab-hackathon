@@ -1,14 +1,21 @@
 function updateUi() {
-    var tbodyObjet = $("tbody");
-    Registry.deployed().LogInfoChanged({}, { fromBlock: 514639 })
-        .watch((error, receivedEvent) => {
-            if (error) {
-                console.error(error);
-            } else {
-                console.log(receivedEvent);
-                findOrCreateAndPopulateConnectionRow(tbody, receivedEvent.args);
+    var tbodyObject = $("tbody");
+    graph.listenToUpdates(
+            (error, confirmationRequired) => {
+                if (error) {
+                    console.error(error);
+                } else {
+                    // TODO show pending confirmation
+                }
+            },
+            (error, linkAdded) => {
+                if (error) {
+                    console.error(error);
+                } else {
+                    findOrCreateAndPopulateEndpointRow(tbodyObject, receivedEvent.args);
+                }
             }
-        });
+        );
 }
 
 /**
@@ -18,11 +25,11 @@ function updateUi() {
  */
 function createEmptyConnectionRow() {
     var tr = $("<tr/>").addClass("data-row");
-    var thIndex = $("<th/>").addClass("index").attr("scope", "row").appendTo(tr);
-    var tdPointNameA = $("<td/>").addClass("pointNameA").appendTo(tr);
-    var tdPointTypeA = $("<td/>").addClass("pointTypeA").appendTo(tr);
-    var tdPointNameB = $("<td/>").addClass("pointNameB").appendTo(tr);
-    var tdPointTypeB = $("<td/>").addClass("pointTypeB").appendTo(tr);
+    var thIndex = $("<th/>").addClass("linkIndex").attr("scope", "row").appendTo(tr);
+    var tdPointNameA = $("<td/>").addClass("nameFrom").appendTo(tr);
+    var tdPointTypeA = $("<td/>").addClass("typeFrom").appendTo(tr);
+    var tdPointNameB = $("<td/>").addClass("nameTo").appendTo(tr);
+    var tdPointTypeB = $("<td/>").addClass("typeTo").appendTo(tr);
     var tdAction = $("<td/>").addClass("text-center").appendTo(tr);
     var buttonConfirm = $("<button/>").html("Confirm").addClass("btn btn-primary confirm").attr({
             "type": "button",
@@ -43,47 +50,51 @@ function createEmptyConnectionRow() {
 /**
  * Populates a <tr> object with the info associated.
  * connection Info is in the form of: {
- *      who : hex string
- *      nameA : string
- *      nameB : string
- *      pointTypeA : number
- *      pointTypeB : number 
- *      index : number (optional)
+ *      from : hex string
+ *      to : hex string
+ *      nameFrom : string
+ *      nameTo : string
+ *      typeFrom : number
+ *      typeTo : number 
+ *      linkIndex : number (optional)
  * }
  */
 function populateConnectionRow(trObject, connectionInfo) {
-    trObject.attr("data-address", connectionInfo.who); 
-    if(typeof(connectionInfo.pointIndexA) != "undefined") {
-        trObject.find("td.index").html(connectionInfo.pointIndex);
+    trObject.attr({
+        "data-from": connectionInfo.from,
+        "data-to": connection.to
+    }); 
+    if(typeof(connectionInfo.linkIndex) != "undefined") {
+        trObject.find("td.linkIndex").html(connectionInfo.linkIndex);
     }
-    trObject.find("td.pointNameA").html(connectionInfo.nameA);
-    trObject.find("td.pointTypeA").html(connectionInfo.pointTypeA);
-    trObject.find("td.pointNameB").html(connectionInfo.nameB);
-    trObject.find("td.pointTypeB").html(connectionInfo.pointTypeB);
-    trObject.find("button.confirm").attr("data-param", "address="+connectionInfo.who);
-    trObject.find("button.remove").attr("data-param", "address="+connectionInfo.who);
+    trObject.find("td.nameFrom").html(connectionInfo.nameA);
+    trObject.find("td.typeFrom").html(connectionInfo.pointTypeA);
+    trObject.find("td.nameTo").html(connectionInfo.nameB);
+    trObject.find("td.typeTo").html(connectionInfo.pointTypeB);
+    // TODO Look again at what to put
+    trObject.find("button.confirm").attr("data-param", "address=" + connectionInfo.from);
+    trObject.find("button.remove").attr("data-param", "address=" + connectionInfo.from);
 }
 
 
 /**
  * Finds the pertinent row in tableObject, and passes it on to populateConnectionRow.
  * connectionInfo is in the form of: {
- *      who : hex string
- *      nameA : string
- *      nameB : string
- *      pointTypeA : number
- *      pointTypeB : number 
- *      indexA : number (optional)
- *      indexB : number (optional)
+ *      from : hex string
+ *      to : hex string
+ *      nameFrom : string
+ *      NameTo : string
+ *      typeFrom : number
+ *      typeTo : number
  * }
  * Returns the row in question.
  */
 function findOrCreateAndPopulateConnectionRow(tbodyObject, connectionInfo) {
-    var trFound = tbodyObject.find("tr[data-from=" + connectionInfo.whoA + ", data-to=" + connectionInfo.whoB + "]");
-    if (trFound.size() == 0) {
+    var trFound = tbodyObject.find("tr[data-from=" + connectionInfo.from + "][data-to=" + connectionInfo.to + "]");
+    if (trFound.length == 0) {
         trFound = createEmptyConnectionRow().appendTo(tbodyObject);
-        connectionInfo.pointIndex = tbodyObjet.find("tr").size();
-    } else if (trFound.size() > 1) {
+        connectionInfo.linkIndex = tbodyObject.find("tr").length;
+    } else if (trFound.length > 1) {
         throw "Not expected to find more than one such row";
     }
     populateConnectionRow(trFound, connectionInfo);
@@ -91,4 +102,8 @@ function findOrCreateAndPopulateConnectionRow(tbodyObject, connectionInfo) {
 }
 
 // add an appropriate event listener
-window.addEventListener("web3Ready", updateUi);
+window.addEventListener("web3Ready", () => {
+    setTimeout(() => {
+        updateUi();
+    }, 100);
+});

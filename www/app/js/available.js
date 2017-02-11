@@ -76,7 +76,7 @@ function findOrCreateAndPopulateEndpointRow(tbodyObject, endpointInfo) {
 // add an appropriate event listener
 window.addEventListener("web3Ready", () => {
     // Careful! For some reason, we need this timeout for the events to not fail.
-    setTimeout(function() {
+    setTimeout(() => {
         updateUi();
     }, 100);
 });
