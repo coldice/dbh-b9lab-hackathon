@@ -30,7 +30,7 @@ describe("basic calls", function() {
             _deployed: {
                 infos: chai.spy(address => new Promise(resolve => resolve(namesObj[address]))),
                 addresses: chai.spy(name => new Promise(resolve => resolve(addressesObj[name]))),
-                LogNameChanged: chai.spy(() => Registry._filter),
+                LogInfoChanged: chai.spy(() => Registry._filter),
                 setInfo: {
                     sendTransaction: chai.spy(() => { 
                         return new Promise(resolve => resolve("txHash"));
@@ -48,7 +48,7 @@ describe("basic calls", function() {
         expect(Registry.setNetwork).to.be.spy;
         expect(Registry._filter.watch).to.be.spy;
         expect(Registry._filter.stopWatching).to.be.spy;
-        expect(Registry._deployed.LogNameChanged).to.be.spy;
+        expect(Registry._deployed.LogInfoChanged).to.be.spy;
         expect(Registry._deployed.setInfo.sendTransaction).to.be.spy;
     });
 
@@ -115,8 +115,8 @@ describe("basic calls", function() {
             .then(() => registry.listenToUpdates(callback))
             .then(() => {
                 expect(Registry.deployed).to.have.been.called.once();
-                expect(Registry._deployed.LogNameChanged)
-                    .to.have.been.called.once.with({}, { fromBlock: 0 });
+                expect(Registry._deployed.LogInfoChanged)
+                    .to.have.been.called.once.with({}, { fromBlock: 514639 });
                 expect(Registry._filter.watch).to.have.been.called.once();
                 innerCallback("error1");
                 expect(callback).to.have.been.called.once();

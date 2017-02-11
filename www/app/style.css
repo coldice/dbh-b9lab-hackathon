@@ -8,12 +8,12 @@ body {
 
 .footer-styling{
     height: 60px;
-    background: lightgrey !important;
+    background: #C8E6C9 !important;
     color: #4CAF50;
 }
 
 .header-styling {
-    background: lightgrey !important;
+    background: #C8E6C9 !important;
     /*border-bottom: 2px #000 solid;*/
 }
 

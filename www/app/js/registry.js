@@ -98,7 +98,8 @@ registry = {
      */
     listenToUpdates: function(callback) {
         if (registry.filter == null) {
-            registry.filter = registry.registryContract.deployed().LogNameChanged({}, { fromBlock: 0 });
+            registry.filter = registry.registryContract.deployed().LogInfoChanged(
+                {}, { fromBlock: 514639 }); // That the deploy block, no need to check earlier
         }
         registry.filter.watch((error, receivedEvent) => {
             if (error) {
