@@ -3,14 +3,15 @@ pragma solidity ^0.4.5;
 contract Registry {
     struct Info {
         bytes32 name;
+        uint pointType;
         string location;
     }
     mapping (address => Info) public infos;
     mapping (bytes32 => address) public addresses;
 
-    event LogInfoChanged(address indexed who, bytes32 indexed name, string location);
+    event LogInfoChanged(address indexed who, bytes32 indexed name, uint indexed pointType, string location);
 
-    function setInfo(bytes32 name, string location) returns (bool successful) {
+    function setInfo(bytes32 name, uint pointType, string location) returns (bool successful) {
         if (name != 0 // It is ok to set your name back to empty string
             && addresses[name] != 0 // It is taken for real
             && addresses[name] != msg.sender) { // This name is given to someone else
@@ -21,15 +22,16 @@ contract Registry {
             addresses[infos[msg.sender].name] = 0; // His former name will map to 0
         }
         infos[msg.sender].name = name;
+        infos[msg.sender].pointType = pointType;
         infos[msg.sender].location = location;
         if (name != 0) {
             addresses[name] = msg.sender;
         }
-        LogInfoChanged(msg.sender, name, location);
+        LogInfoChanged(msg.sender, name, pointType, location);
         return true;
     }
 }
 
-address: 0x4720d45bfd15d1861a2e4631fc35ca2e9d76c015
+address: 0x2a7f6dd5fe412469761674c14f4415d5658ae8de
 compiler: 0.4.8
 optimisation: true
