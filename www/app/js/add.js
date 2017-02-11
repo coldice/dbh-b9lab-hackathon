@@ -42,7 +42,7 @@ function populateEndpointRow(trObject, endpointInfo) {
 /**
  * Finds the pertinent row in tableObject, and passes it on to populateEndpointRow.
  */
-function findAndPopulateEndpointRow(tableObjet, endpointInfo) {
+function findOrCreateAndPopulateEndpointRow(tableObjet, endpointInfo) {
 }
 
 // add an appropriate event listener
