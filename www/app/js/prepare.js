@@ -22,12 +22,10 @@ window.addEventListener('load', function() {
             });
         
             if (typeof registry != "undefined") {
-                return registry.prepare(web3, Registry);
+                registry.prepare(web3, Registry);
             }
-        })
-        .then(() => {
             if (typeof graph != "undefined") {
-                return graph.prepare(web3, Graph);
+                graph.prepare(web3, Graph);
             }
         })
         .then(() => {

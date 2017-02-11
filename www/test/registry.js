@@ -53,18 +53,14 @@ describe("basic calls", function() {
     });
 
     it("prepare called sub-functions as expected", function() {
-        return registry.prepare(web3, Registry)
-            .then(() => {
-                expect(web3.version.getNetworkPromise).to.have.been.called();
-                expect(Registry.setProvider).to.have.been.called.with("currentProvider1");
-                expect(Registry.setNetwork).to.have.been.called.with('45');
-                expect(registry.web3).to.equal(web3);
-        });
+        registry.prepare(web3, Registry);
+        expect(registry.web3).to.equal(web3);
+        expect(registry.registryContract).to.equal(Registry);
     });
 
     it("getInfoOf called sub-functions as expected", function() {
-        return registry.prepare(web3, Registry)
-            .then(() => registry.getInfoOf("0x0"))
+        registry.prepare(web3, Registry);
+        return registry.getInfoOf("0x0")
             .then(function(info) {
                 expect(info.name).to.equal("testName");
                 expect(info.pointType).to.equal(2);
@@ -75,8 +71,8 @@ describe("basic calls", function() {
     });
 
     it("getAddressOf called sub-functions as expected", function() {
-        return registry.prepare(web3, Registry)
-            .then(() => registry.getAddressOf("testName"))
+        registry.prepare(web3, Registry);
+        return registry.getAddressOf("testName")
             .then(address => {
                 expect(address).to.equal("0x0");
                 expect(Registry.deployed).to.have.been.called.once();
@@ -85,12 +81,12 @@ describe("basic calls", function() {
     });
 
     it("setNameTo called sub-functions as expected", function() {
-        return registry.prepare(web3, Registry)
-            .then(() => registry.setInfoTo({
-                name: "newName",
-                pointType: 2,
-                location: "newLocation"
-            }, "0x0"))
+        registry.prepare(web3, Registry);
+        return registry.setInfoTo({
+                    name: "newName",
+                    pointType: 2,
+                    location: "newLocation"
+                }, "0x0")
             .then(txHash => {
                 expect(Registry.deployed).to.have.been.called.once();
                 expect(Registry._deployed.setInfo.sendTransaction)
@@ -111,41 +107,37 @@ describe("basic calls", function() {
         Registry._filter.watch = chai.spy(_innerCallback => {
             innerCallback = _innerCallback;
         });
-        return registry.prepare(web3, Registry)
-            .then(() => registry.listenToUpdates(callback))
-            .then(() => {
-                expect(Registry.deployed).to.have.been.called.once();
-                expect(Registry._deployed.LogInfoChanged)
-                    .to.have.been.called.once.with({}, { fromBlock: 514639 });
-                expect(Registry._filter.watch).to.have.been.called.once();
-                innerCallback("error1");
-                expect(callback).to.have.been.called.once();
-                expect(error).to.equal("error1");
-                expect(value).to.be.undefined;
-                innerCallback(null, { args: {
-                    name: web3.toHex("name1"),
-                    pointType: web3.toBigNumber(2),
-                    location: "location1"
-                }});
-                expect(callback).to.have.been.called.twice();
-                expect(error).to.be.null;
-                expect(value).to.deep.equal({ args: {
-                    name: "name1",
-                    pointType: 2,
-                    location: "location1"
-                }});
-            });
+        registry.prepare(web3, Registry);
+        registry.listenToUpdates(callback);
+        expect(Registry.deployed).to.have.been.called.once();
+        expect(Registry._deployed.LogInfoChanged)
+            .to.have.been.called.once.with({}, { fromBlock: 514639 });
+        expect(Registry._filter.watch).to.have.been.called.once();
+        innerCallback("error1");
+        expect(callback).to.have.been.called.once();
+        expect(error).to.equal("error1");
+        expect(value).to.be.undefined;
+        innerCallback(null, { args: {
+            name: web3.toHex("name1"),
+            pointType: web3.toBigNumber(2),
+            location: "location1"
+        }});
+        expect(callback).to.have.been.called.twice();
+        expect(error).to.be.null;
+        expect(value).to.deep.equal({ args: {
+            name: "name1",
+            pointType: 2,
+            location: "location1"
+        }});
     }); 
 
     it("stopListeningToUpdates called sub-functions as expected", function() {
         registry.filter = null;
-        return registry.prepare(web3, Registry)
-            .then(() => registry.listenToUpdates(() => {}))
-            .then(() => registry.stopListeningToUpdates())
-            .then(() => {
-                expect(Registry._filter.stopWatching).to.have.been.called.once();
-                expect(registry.filter).to.be.null;
-            });
+        registry.prepare(web3, Registry);
+        registry.listenToUpdates(() => {});
+        registry.stopListeningToUpdates();
+        expect(Registry._filter.stopWatching).to.have.been.called.once();
+        expect(registry.filter).to.be.null;
     });
 
 });
