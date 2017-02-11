@@ -29,20 +29,18 @@
     <div class="container main-content">
         <form class="form-signin">
             <h2 class="form-signin-heading">Account: <span id="lbl_account">xxx</span></h2>
+
+            <input id="radio_from" type="radio" name="emitter" value="from" checked> From your address<br>
+
+            <input id="txt_from" type="text" class="form-control" placeholder="From this address">
+
+            <input id="radio_to" type="radio" name="emitter" value="to"> To your address<br>
             
-            <input id="txt_address" type="address" class="form-control" placeholder="Address">
+            <input id="txt_to" type="text" class="form-control" placeholder="To this address" disabled="disabled">
             
             <input id="txt_loss" type="loss" class="form-control" placeholder="Loss">
 
             <input id="txt_throughput" type="throughput" class="form-control" placeholder="Throughput">
-
-            <input id="radio_from" type="radio" name="emitter" value="from" checked> From<br>
-
-            <input id="txt_from" type="adress" class="form-control" placeholder="from your address" disabled="disabled">
-
-            <input id="radio_to" type="radio" name="emitter" value="to"> To<br>
-            
-            <input id="txt_to" type="adress" class="form-control" placeholder="to your address" disabled="disabled">
 
             <button id="btn_submit_add" class="btn btn-lg btn-primary btn-block" type="button">Submit</button>
             

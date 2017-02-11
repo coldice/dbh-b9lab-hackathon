@@ -12,7 +12,8 @@ function updateUi() {
 
 function loadActions() {
     $("#btn_submit_add").click(function() {
-        var pickedAddress = $("#txt_address").val();
+        var fromAddress = $("#txt_from").val();
+        var toAddress = $("#txt_to").val();
         var pickedLoss = $("#txt_loss").val();
         var pickedThroughput = $("#txt_throughput").val();
         $("#lbl_error").hide();
@@ -21,16 +22,8 @@ function loadActions() {
                 $("#lbl_processing").show();
                 if($("#radio_to").is(":checked")) {
                     return graph.submitLink({
-                            from: pickedAddress,
-                            to: account,
-                            loss: pickedLoss,
-                            throughput: pickedThroughput
-                        }, account);
-                }
-                else {
-                    return graph.submitLink({
-                            from: account,
-                            to: pickedAddress,
+                            from: fromAddress,
+                            to: toAddress,
                             loss: pickedLoss,
                             throughput: pickedThroughput
                         }, account);
@@ -49,11 +42,15 @@ function loadActions() {
     });
     $("#radio_from").click(function() {
         $("#txt_from").attr("placeholder", ($("#lbl_account").text()));
-        $("#txt_to").attr("placeholder", "to your address");
+        $("#txt_to").attr("placeholder", "To this address");
+        $("#txt_from").prop("disabled",  true);
+        $("#txt_to").prop("disabled", false);
     });
     $("#radio_to").click(function() {        
-        $("#txt_from").attr("placeholder", "from your address");
+        $("#txt_from").attr("placeholder", "From this address");
         $("#txt_to").attr("placeholder", $("#lbl_account").text());
+        $("#txt_from").prop("disabled",  false);
+        $("#txt_to").prop("disabled", true);
     });
 }
 
