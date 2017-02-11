@@ -13,7 +13,16 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     
     <!-- Custom styles for this template -->
+    <link href="style.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
     <link href="style.css" rel="stylesheet"> 
+    <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/registry.js"></script>
+    <script type="text/javascript" src="js/prepare.js"></script>
+    <script type="text/javascript" src="js/add.js"></script>
+    <script type="text/javascript" src="js/datatools.js"></script>
 </head>
 
 <body>
@@ -34,17 +43,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr class="data-row" data-address="addr1">
                             <th scope="row">1</th>
                             <td>User A</td>
-                            <td class="text-center"><button class="btn btn-primary" type="">Add</button></td>
+                            <td class="text-center"><button class="btn btn-primary" type="button" data-type="autoButton" data-action="get" data-target="add.html" data-param="d1=x&d2=y">Add</button></td>
                         </tr>
-                        <tr>
+                        <tr class="data-row" data-address="addr2">
                             <th scope="row">2</th>
                             <td>User B</td>
                             <td class="text-center"><button class="btn btn-primary" type="">Add</button></td>
                         </tr>
-                        <tr>
+                        <tr class="data-row" data-address="addr3">
                             <th scope="row">3</th>
                             <td>User C</td>
                             <td class="text-center"><button class="btn btn-primary" type="">Add</button></td>
@@ -61,7 +70,7 @@
     <!-- Bootstrap core JavaScript ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     
-    <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
