@@ -20,6 +20,7 @@
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/utils.js"></script>
     <script type="text/javascript" src="js/prepare.js"></script>
+    <script type="text/javascript" src="js/registry.js"></script>
     <script type="text/javascript" src="js/graph.js"></script>
     <script type="text/javascript" src="js/add.js"></script>
     <script type="text/javascript" src="js/datatools.js"></script>
@@ -31,7 +32,9 @@
     
     <div class="container main-content">
         <form class="form-signin">
-            <h2 class="form-signin-heading">Account: <span id="lbl_account">xxx</span></h2>
+            <h2 class="form-signin-heading">Your end point:</h2>
+            <h3 class="" id="txt_account_name"></h3>
+            <p><span id="lbl_account">xxx</span></p>
 
             <ul class="nav nav-tabs" id="rowTab">
 
@@ -53,9 +56,11 @@
 
             <input id="txt_to" type="text" class="form-control" placeholder="To your address" disabled="disabled" data-auto-param="address">
 
-            <input id="txt_loss" type="loss" class="form-control" placeholder="Loss">
+            <label for="txt_loss">Loss, 1000 &lt;-&gt; 1%</label>
+            <input id="txt_loss" name="txt_loss" type="number" class="form-control" placeholder="Loss">
 
-            <input id="txt_throughput" type="throughput" class="form-control" placeholder="Throughput">
+            <label for="txt_throughput">Throughput, in Watt</label>
+            <input id="txt_throughput" name="txt_throughput" type="number" class="form-control" placeholder="Throughput">
 
             <button id="btn_submit_add" class="btn btn-lg btn-primary btn-block" type="button">Submit</button>
             

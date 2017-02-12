@@ -11,13 +11,13 @@ window.addEventListener('load', function() {
     // Our own utils
     Utils.init(web3);
 
-    [Graph,Migrations,Registry].forEach(function(contract) {
+    [Graph,Migrations,Registry,EnergyToken].forEach(function(contract) {
         contract.setProvider(window.web3.currentProvider);
     });
     
     return web3.version.getNetworkPromise()
         .then(version => {
-            [Graph,Migrations,Registry].forEach(function(contract) {
+            [Graph,Migrations,Registry,EnergyToken].forEach(function(contract) {
                 contract.setNetwork(version);
             });
         
@@ -26,6 +26,9 @@ window.addEventListener('load', function() {
             }
             if (typeof graph != "undefined") {
                 graph.prepare(web3, Graph);
+            }
+            if (typeof energyToken != "undefined") {
+                energyToken.prepare(web3, EnergyToken);
             }
         })
         .then(() => {

@@ -60,10 +60,10 @@ function addGraphListener() {
             if (error) {
                 console.error(error);
             } else {
-                from = linkAdded.args.from;
-                to = linkAdded.args.to;
-                throughput = linkAdded.args.throughput;
-                loss = linkAdded.args.loss;
+                var from = linkAdded.args.from;
+                var to = linkAdded.args.to;
+                var throughput = linkAdded.args.throughput;
+                var loss = linkAdded.args.loss;
                 addConnection(from, to, throughput, loss);
             }
         }

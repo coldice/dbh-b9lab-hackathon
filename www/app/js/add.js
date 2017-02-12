@@ -4,13 +4,16 @@ function updateUi() {
             $("#lbl_account").html(account);
             updateSelectUI($('.nav-tabs .active').attr("href")); // must be called after we set the textfield
             autoSetup($(document));
+            return registry.getInfoOf(account);
+        })
+        .then(info => {
+            $("#txt_account_name").html(info.name);
         })
         .catch(error => {
             console.error(error);
             // Show the UI that there is no account. No need to alert.
         })
 }
-
 
 function loadActions() {
     $("#btn_submit_add").click(function() {
@@ -32,7 +35,7 @@ function loadActions() {
             .then(web3.eth.getTransactionReceiptMined)
             .then(receipt => {
                 $("#lbl_processing").hide();
-                console.log(web3.sha3(receipt.logs[0].data));
+                console.log(web3.sha3(receipt.logs[0].args));
             })
             .catch(error => {
                 console.error(error);
