@@ -25,11 +25,7 @@ function loadActions() {
         return web3.eth.getFirstAccountPromise()
             .then(account => {
                 $("#lbl_processing").show();
-                return graph.submitLink({
-                        from: fromAddress,
-                        to: toAddress,
-                        loss: pickedLoss,
-                        throughput: pickedThroughput
+                return graph.submitLink({ from: fromAddress, to: toAddress, loss: pickedLoss, throughput: pickedThroughput
                     }, account);
             })
             .then(web3.eth.getTransactionReceiptMined)
@@ -44,12 +40,15 @@ function loadActions() {
                 // Did you check that the name is taken or not?
             });
     });
+    setupTabHandler();
+}
+
+function setupTabHandler() {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var target = $(e.target).attr("href"); // activated tab
         updateSelectUI(target);
     });
 }
-
 function updateSelectUI(target) {
     if(target === "#to"){
         $("#txt_from").val($("#lbl_account").text());
