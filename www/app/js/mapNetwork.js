@@ -15,19 +15,30 @@ function initGraph() {
         labels: function(obj) {
             return obj.data.nodeType;
         },
-        labelStyle: {fill: 'red'},
+        labelStyle: {fill: "#378E43"},
         edgeLabels: function(obj) {
             return getEnergyFormatString(obj.data.throughput);
         },
         edgeStyle: {
-            'stroke-width': 5
+            'stroke-width': 5,
+            fill: '#378E43'
         },
         nodeStyle: {
-            fill: function(d) { 
-                return d.data.color; 
-            }
-        }, 
-        labelStyle: {fill: 'red'}
+            fill: '#81C784'
+        },
+        layoutAttr: {
+            size:10,
+            linkDistance:200,
+            /*linkStrength:2,*/
+            friction:0.5,
+            /*charge:10,
+            theta:0.1,
+            gravity:0.2*/
+        },
+        panZoom: {
+            enabled: true,
+            scale: false
+        }
     }, true);
 }
 
