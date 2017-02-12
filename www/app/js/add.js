@@ -2,6 +2,7 @@ function updateUi() {
     return web3.eth.getFirstAccountPromise()
         .then(account => {
             $("#lbl_account").html(account);
+            updateSelectUI(); // must be called after we set the textfield
         })
         .catch(error => {
             console.error(error);
@@ -40,18 +41,22 @@ function loadActions() {
                 // Did you check that the name is taken or not?
             });
     });
-    $("#radio_from").click(function() {
-        $("#txt_from").attr("placeholder", ($("#lbl_account").text()));
-        $("#txt_to").attr("placeholder", "To this address");
+    $("#radio_from").click(updateSelectUI);
+    $("#radio_to").click(updateSelectUI);
+}
+
+function updateSelectUI() {
+    if($("#radio_from").is(":checked")) {
+        $("#txt_from").val($("#lbl_account").text());
+        $("#txt_to").val("").attr("placeholder", "To this address");
         $("#txt_from").prop("disabled",  true);
         $("#txt_to").prop("disabled", false);
-    });
-    $("#radio_to").click(function() {        
-        $("#txt_from").attr("placeholder", "From this address");
-        $("#txt_to").attr("placeholder", $("#lbl_account").text());
+    } else { 
+        $("#txt_from").val("").attr("placeholder", "From this address");
+        $("#txt_to").val($("#lbl_account").text());
         $("#txt_from").prop("disabled",  false);
         $("#txt_to").prop("disabled", true);
-    });
+    }
 }
 
 // add an appropriate event listener

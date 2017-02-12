@@ -1,6 +1,7 @@
 function autoSetup(obj) {
-    //setupAutoButtons(obj);
-    //setupAutoForms(obj);
+    setupAutoButtons(obj);
+    setupAutoForms(obj);
+    console.log("auto");
 }
 
 function setupAutoButtons(obj) {
@@ -10,9 +11,7 @@ function setupAutoButtons(obj) {
 }
 
 function addButtonAction(btn) {
-    console.log(btn);
     action = btn.attr("data-action");
-    console.log(action);
 
     if(action=="get") {
         btn.click(function() {
@@ -27,9 +26,11 @@ function getUrlParams(strParams) {
     // TODO: unescape
     $.each(strParams.split("&"), function() {
         // should be key=val
-        console.log("setup " + strParams);
         param = strParams.split("=");
-        if (param.length != 2) return;
+        if (param.length != 2) {
+            console.log("params error");
+            return;
+        }
         params[param[0]] = param[1];
     });
 
@@ -39,19 +40,13 @@ function getUrlParams(strParams) {
 function setupAutoForms(obj) {
     if (window.location.search != "") {
         var params = getUrlParams(window.location.search.substr(1));
-        console.log("in:");
-        console.log(params);
-        console.log(params.length);
 
         autoFields = obj.find("[data-auto-param]");
         $.each(params, function(key, val) {
-            console.log("looking for " + "[data-auto-param="+key+"]");
-            console.log("in:");
-            console.log()
-            autoFields.find("[data-auto-param="+key+"]").each(function() {
-                console.log($(this));
-                console.log(val);
-                $(this).val(val);
+            autoFields.each(function() {
+                if($(this).attr("data-auto-param") == key) {
+                    $(this).val(val);
+                }
             })
         });
     }
