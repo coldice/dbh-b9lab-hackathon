@@ -6,6 +6,7 @@ exclude:
 - /www/node_modules/.*
 - /www/app/js/app.js
 - /www/app/js/sigmajs/.*
+- /www/app/lib/.*
 component_depth: 2
 languages:
 - solidity

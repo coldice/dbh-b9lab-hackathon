@@ -31,16 +31,19 @@
     
     <div class="container main-content">
         <form class="form-signin">
-            <h2 class="form-signin-heading">Account:<span id="lbl_account"></span></h2>
+            <h2 class="form-signin-heading">About your endpoint:</h2>
+            <p><span id="lbl_account"></span></p>
             
             <label for="txt_name">Name</label>
             <input type="name" name="txt_name" id="txt_name" class="form-control" placeholder="Name">
 
             <label for="txt_point_type">End Point Type</label>
-            <input type="number" name="txt_point_type" id="txt_point_type" class="form-control" placeholder="Point Type">
-
-            <label for="txt_location">Location</label>
-            <input type="location" name="txt_location" id="txt_location" class="form-control" placeholder="Location">
+            <select name="select_point_type" id="select_point_type" class="form-control">
+            </select>
+            
+            <label for="txt_location">Location: Lat / Lng</label>
+            <input type="number" name="txt_latitude" id="txt_latitude" class="form-control" placeholder="Latitude" title="Latitude">
+            <input type="number" name="txt_longitude" id="txt_longitude" class="form-control" placeholder="Longitude" title="Longitude">
             
             <button id="btn_submit_register" class="btn btn-lg btn-primary btn-block" type="button">Submit</button>
             

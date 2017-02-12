@@ -2,6 +2,11 @@ html * {
    font-family: 'Raleway', sans-serif;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    color: #4CAF50;
+    padding-bottom: 20px;
+}
+
 .main-content {
     padding-top: 100px;
 }
@@ -36,7 +41,7 @@ html * {
     color: #4CAF50;
 }
 
-.navbar-brand img {
+.navbar-brand a img {
     max-height: 60px;
 }
 
@@ -126,11 +131,9 @@ body {
   z-index: 2;
 }
 
-.form-signin input[type="name"] {
-  margin-bottom: 10px;
-}
-
-.form-signin input[type="location"] {
+.form-signin input[type="name"],
+.form-signin select[name="select_point_type"],
+.form-signin input[type="number"] {
   margin-bottom: 10px;
 }
 

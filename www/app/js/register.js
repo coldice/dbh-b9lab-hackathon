@@ -18,8 +18,10 @@ function isNameTaken(name) {
 function loadActions() {
     $("#btn_submit_register").click(function() {
         var pickedName = $("#txt_name").val();
-        var pickedPointType = $("#txt_point_type").val();
-        var pickedLocation = $("#txt_location").val();
+        var pickedPointType = $("#select_point_type").val();
+        var pickedLatitude = $("#txt_latitude").val();
+        var pickedLongitude = $("#txt_longitude").val();
+        console.log(pickedLatitude, pickedLongitude);
         $("#lbl_error").hide();
         return isNameTaken(pickedName)
             .then(web3.eth.getFirstAccountPromise)
@@ -28,7 +30,10 @@ function loadActions() {
                 return registry.setInfoTo({
                         name: pickedName,
                         pointType: pickedPointType,
-                        location: pickedLocation
+                        location: JSON.stringify({
+                            lat: pickedLatitude,
+                            lng: pickedLongitude
+                        })
                     }, account);
             })
             .then(web3.eth.getTransactionReceiptMined)
@@ -36,7 +41,6 @@ function loadActions() {
                 $("#lbl_processing").hide();
                 $("#lbl_name").html(pickedName);
                 $("#lbl_pointType").html(pickedPointType);
-                $("#lbl_location").html(pickedLocation);
             })
             .catch(error => {
                 console.error(error);
@@ -56,6 +60,10 @@ function loadActions() {
 }
 
 function updateUi() {
+    var selectObj = $("select#select_point_type");
+    Object.keys(registry.pointTypes).forEach(function(key) {
+        $("<option/>").val(key).html(registry.pointTypes[key]).appendTo(selectObj);
+    })
     return web3.eth.getAccountsPromise()
         .then(accounts => {
             if (accounts.length > 0) {
@@ -67,8 +75,15 @@ function updateUi() {
         .then(info => {
             $("#lbl_account").html(info.address);
             $("#txt_name").val(info.name);
-            $("#txt_point_type").val(info.pointType);
-            $("#txt_location").val(info.location);
+            $("#select_point_type").val(info.pointType);
+            try {
+                var parsedLocation = JSON.parse(info.location);
+                $("#txt_latitude").val(parsedLocation.lat);
+                $("#txt_longitude").val(parsedLocation.lng);
+            } catch(error) {
+                console.error("Failed to parse", info.location)
+            }
+            
         })
         .catch(error => {
             console.error(error);
