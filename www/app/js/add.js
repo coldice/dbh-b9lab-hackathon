@@ -2,6 +2,7 @@ function updateUi() {
     return web3.eth.getFirstAccountPromise()
         .then(account => {
             $("#lbl_account").html(account);
+            $("#txt_to").val(account);
         })
         .catch(error => {
             console.error(error);
@@ -43,13 +44,17 @@ function loadActions() {
     });
     $("#radio_from").click(function() {
         $("#txt_from").attr("placeholder", ($("#lbl_account").text()));
+        $("#txt_from").val($("#lbl_account").text());
         $("#txt_to").attr("placeholder", "To this address");
+        $("#txt_to").val("");
         $("#txt_from").prop("disabled",  true);
         $("#txt_to").prop("disabled", false);
     });
-    $("#radio_to").click(function() {        
-        $("#txt_from").attr("placeholder", "From this address");
+    $("#radio_to").click(function() {
         $("#txt_to").attr("placeholder", $("#lbl_account").text());
+        $("#txt_to").val($("#lbl_account").text());        
+        $("#txt_from").attr("placeholder", "From this address");
+        $("#txt_from").val("");
         $("#txt_from").prop("disabled",  false);
         $("#txt_to").prop("disabled", true);
     });
