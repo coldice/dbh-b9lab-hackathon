@@ -6,6 +6,21 @@ html * {
     padding-top: 100px;
 }
 
+.jumbotron {
+    text-align: center;
+}
+
+.hero-logo img {
+    margin-top: 100px;
+    max-width: 500px;
+}
+
+.subtitle {
+    margin-top: 20px;
+    font-size: 24px;
+    color: #4CAF50;
+}
+
 .footer-styling{
     height: 60px;
     background: #C8E6C9 !important;
@@ -23,6 +38,16 @@ html * {
 
 .navbar-brand img {
     max-height: 60px;
+}
+
+.bkg-lightgreen {
+    padding: 100px 0;
+    background: #C8E6C9;
+}
+
+.bkg-white {
+    padding: 100px 0;
+    background: #FFF;
 }
 
 #map {
