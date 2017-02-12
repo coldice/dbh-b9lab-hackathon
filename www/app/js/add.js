@@ -52,14 +52,14 @@ function loadActions() {
 
 function updateSelectUI(target) {
     if(target === "#to"){
-        $("#txt_from").val("From your address : " + $("#lbl_account").text());
+        $("#txt_from").val($("#lbl_account").text());
         $("#txt_to").val("").attr("placeholder", "To this address");
         $("#txt_from").prop("disabled",  true);
         $("#txt_to").prop("disabled", false);
     }
     else if(target === "#from") {
         $("#txt_from").val("").attr("placeholder", "From this address");
-        $("#txt_to").val("To your address : " + $("#lbl_account").text());
+        $("#txt_to").val($("#lbl_account").text());
         $("#txt_from").prop("disabled",  false);
         $("#txt_to").prop("disabled", true);
     }
