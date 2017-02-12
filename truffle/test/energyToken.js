@@ -44,6 +44,16 @@ contract('Graph', function(accounts) {
 
     describe("basic instantiation", function() {
 
+        it("should have deployed in migration script", function() {
+            return EnergyToken.deployed().graph()
+                .then(graphAddress => {
+                    assert.strictEqual(
+                        graphAddress,
+                        Graph.deployed().address,
+                        "should be the deployed address");
+                })
+        });
+
         it("should store the passed Graph address", function() {
             return EnergyToken.new(graph.address, { from: user1 })
                 .then(instance => instance.graph())
