@@ -18,7 +18,7 @@ function isNameTaken(name) {
 function loadActions() {
     $("#btn_submit_register").click(function() {
         var pickedName = $("#txt_name").val();
-        var pickedPointType = $("#txt_point_type").val();
+        var pickedPointType = $("#select_point_type").val();
         var pickedLocation = $("#txt_location").val();
         $("#lbl_error").hide();
         return isNameTaken(pickedName)
@@ -56,6 +56,10 @@ function loadActions() {
 }
 
 function updateUi() {
+    var selectObj = $("select#select_point_type");
+    Object.keys(registry.pointTypes).forEach(function(key) {
+        $("<option/>").val(key).html(registry.pointTypes[key]).appendTo(selectObj);
+    })
     return web3.eth.getAccountsPromise()
         .then(accounts => {
             if (accounts.length > 0) {
@@ -67,7 +71,7 @@ function updateUi() {
         .then(info => {
             $("#lbl_account").html(info.address);
             $("#txt_name").val(info.name);
-            $("#txt_point_type").val(info.pointType);
+            $("#select_point_type").val(info.pointType);
             $("#txt_location").val(info.location);
         })
         .catch(error => {

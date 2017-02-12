@@ -130,6 +130,10 @@ body {
   margin-bottom: 10px;
 }
 
+.form-signin select[name="select_point_type"] {
+  margin-bottom: 10px;
+}
+
 .form-signin input[type="location"] {
   margin-bottom: 10px;
 }
