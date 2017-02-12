@@ -231,13 +231,13 @@ var SolidityEvent = require("web3/lib/web3/event.js");
 
   Contract.new = function() {
     if (this.currentProvider == null) {
-      throw new Error("Graph error: Please call setProvider() first before calling new().");
+      throw new Error("EnergyToken error: Please call setProvider() first before calling new().");
     }
 
     var args = Array.prototype.slice.call(arguments);
 
     if (!this.unlinked_binary) {
-      throw new Error("Graph error: contract binary not set. Can't deploy new instance.");
+      throw new Error("EnergyToken error: contract binary not set. Can't deploy new instance.");
     }
 
     var regex = /__[^_]+_+/g;
@@ -256,7 +256,7 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         return name != arr[index + 1];
       }).join(", ");
 
-      throw new Error("Graph contains unresolved libraries. You must deploy and link the following libraries before you can deploy a new version of Graph: " + unlinked_libraries);
+      throw new Error("EnergyToken contains unresolved libraries. You must deploy and link the following libraries before you can deploy a new version of EnergyToken: " + unlinked_libraries);
     }
 
     var self = this;
@@ -297,7 +297,7 @@ var SolidityEvent = require("web3/lib/web3/event.js");
 
   Contract.at = function(address) {
     if (address == null || typeof address != "string" || address.length != 42) {
-      throw new Error("Invalid address passed to Graph.at(): " + address);
+      throw new Error("Invalid address passed to EnergyToken.at(): " + address);
     }
 
     var contract_class = this.web3.eth.contract(this.abi);
@@ -308,7 +308,7 @@ var SolidityEvent = require("web3/lib/web3/event.js");
 
   Contract.deployed = function() {
     if (!this.address) {
-      throw new Error("Cannot find deployed address: Graph not deployed or address not set.");
+      throw new Error("Cannot find deployed address: EnergyToken not deployed or address not set.");
     }
 
     return this.at(this.address);
@@ -351,11 +351,24 @@ var SolidityEvent = require("web3/lib/web3/event.js");
     "abi": [
       {
         "constant": true,
-        "inputs": [],
-        "name": "requiredCount",
+        "inputs": [
+          {
+            "name": "producer",
+            "type": "address"
+          },
+          {
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "name": "original",
+            "type": "uint256"
+          }
+        ],
+        "name": "adjust",
         "outputs": [
           {
-            "name": "",
+            "name": "adjusted",
             "type": "uint256"
           }
         ],
@@ -366,85 +379,19 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "constant": true,
         "inputs": [
           {
-            "name": "",
+            "name": "producer",
             "type": "address"
           },
           {
-            "name": "",
+            "name": "consumer",
             "type": "address"
           }
         ],
-        "name": "directedLinks",
+        "name": "getAllowance",
         "outputs": [
           {
-            "name": "loss",
+            "name": "allowance",
             "type": "uint256"
-          },
-          {
-            "name": "throughput",
-            "type": "uint256"
-          }
-        ],
-        "payable": false,
-        "type": "function"
-      },
-      {
-        "constant": true,
-        "inputs": [
-          {
-            "name": "from",
-            "type": "address"
-          },
-          {
-            "name": "to",
-            "type": "address"
-          }
-        ],
-        "name": "isYourLink",
-        "outputs": [
-          {
-            "name": "isIndeed",
-            "type": "bool"
-          }
-        ],
-        "payable": false,
-        "type": "function"
-      },
-      {
-        "constant": true,
-        "inputs": [
-          {
-            "name": "key",
-            "type": "bytes32"
-          },
-          {
-            "name": "user",
-            "type": "address"
-          }
-        ],
-        "name": "getConfirmationOf",
-        "outputs": [
-          {
-            "name": "confirmed",
-            "type": "bool"
-          }
-        ],
-        "payable": false,
-        "type": "function"
-      },
-      {
-        "constant": true,
-        "inputs": [
-          {
-            "name": "data",
-            "type": "bytes"
-          }
-        ],
-        "name": "calculateKey",
-        "outputs": [
-          {
-            "name": "key",
-            "type": "bytes32"
           }
         ],
         "payable": false,
@@ -454,23 +401,15 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "constant": false,
         "inputs": [
           {
-            "name": "from",
+            "name": "_producer",
             "type": "address"
           },
           {
-            "name": "to",
-            "type": "address"
-          },
-          {
-            "name": "loss",
-            "type": "uint256"
-          },
-          {
-            "name": "throughput",
+            "name": "howMuch",
             "type": "uint256"
           }
         ],
-        "name": "submitLink",
+        "name": "consume",
         "outputs": [
           {
             "name": "successful",
@@ -485,13 +424,13 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "inputs": [
           {
             "name": "",
-            "type": "bytes32"
+            "type": "address"
           }
         ],
-        "name": "confirmations",
+        "name": "producers",
         "outputs": [
           {
-            "name": "count",
+            "name": "stock",
             "type": "uint256"
           }
         ],
@@ -499,7 +438,65 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "type": "function"
       },
       {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "howMuch",
+            "type": "uint256"
+          }
+        ],
+        "name": "produce",
+        "outputs": [
+          {
+            "name": "successful",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "name": "howMuch",
+            "type": "uint256"
+          }
+        ],
+        "name": "allow",
+        "outputs": [
+          {
+            "name": "successful",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
         "inputs": [],
+        "name": "graph",
+        "outputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "name": "_graph",
+            "type": "address"
+          }
+        ],
         "payable": false,
         "type": "constructor"
       },
@@ -508,26 +505,21 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "inputs": [
           {
             "indexed": true,
-            "name": "from",
-            "type": "address"
-          },
-          {
-            "indexed": true,
-            "name": "to",
+            "name": "producer",
             "type": "address"
           },
           {
             "indexed": false,
-            "name": "loss",
+            "name": "howMuch",
             "type": "uint256"
           },
           {
             "indexed": false,
-            "name": "throughput",
+            "name": "stock",
             "type": "uint256"
           }
         ],
-        "name": "LogLinkAdded",
+        "name": "LogEnergyProduced",
         "type": "event"
       },
       {
@@ -535,69 +527,171 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "inputs": [
           {
             "indexed": true,
-            "name": "key",
-            "type": "bytes32"
+            "name": "producer",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "howMuch",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "total",
+            "type": "uint256"
           }
         ],
-        "name": "OnConfirmationRequired",
+        "name": "LogConsumptionAllowed",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "producer",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "howMuch",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "adjusted",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "stock",
+            "type": "uint256"
+          }
+        ],
+        "name": "LogEnergyConsumed",
         "type": "event"
       }
     ],
-    "unlinked_binary": "0x606060405234610000575b60025b60008190555b505b5b610512806100256000396000f300606060405236156100675763ffffffff60e060020a60003504166306c7dbb5811461006c5780631dc2595b1461008b5780633a07bfb3146100c3578063613bf18a146100f6578063a495b15314610126578063bfd58bdf1461018b578063ec95bfe7146101c4575b610000565b34610000576100796101e6565b60408051918252519081900360200190f35b34610000576100aa600160a060020a03600435811690602435166101ec565b6040805192835260208301919091528051918290030190f35b34610000576100e2600160a060020a0360043581169060243516610210565b604080519115158252519081900360200190f35b34610000576100e2600435600160a060020a036024351661024c565b604080519115158252519081900360200190f35b3461000057610079600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284375094965061027b95505050505050565b60408051918252519081900360200190f35b34610000576100e2600160a060020a03600435811690602435166044356064356102e2565b604080519115158252519081900360200190f35b346100005761007960043561045e565b60408051918252519081900360200190f35b60005481565b60026020908152600092835260408084209091529082529020805460019091015482565b600082600160a060020a031633600160a060020a03161480610243575081600160a060020a031633600160a060020a0316145b90505b92915050565b6000828152600160208181526040808420600160a060020a0386168552909201905290205460ff165b92915050565b6000816040518082805190602001908083835b602083106102ad5780518252601f19909201916020918201910161028e565b6001836020036101000a038019825116818451168082178552505050505050905001915050604051809103902090505b919050565b60008484600160a060020a03821615806103035750600160a060020a038116155b8061031557506103138282610210565b155b80610331575080600160a060020a031682600160a060020a0316145b1561033b57610000565b600060006103796000368080601f0160208091040260200160405190810160405280939291908181526020018383808284375061027b945050505050565b915061038482610470565b90506000548110156103ca5780600114156103c55760405182907f4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b90600090a25b610450565b6040805180820182528881526020808201898152600160a060020a03808e16600081815260028552868120928f1680825292855286902094518555915160019094019390935583518b81529182018a90528351929390927fc0e8693a712ee49068f452bfc718b4b43b15252c5c6403e371d956bcd9c588c39281900390910190a3600194505b5b50505b5050949350505050565b60016020526000908152604090205481565b6000818152600160208181526040808420600160a060020a0333168552909201905281205460ff16156104a257610000565b506000818152600160208181526040808420600160a060020a03331685528084018352908420805460ff19168417905592849052819052815401908190555b9190505600a165627a7a723058203e62d50d721e138853bc64940fa01f04133f81351760dca0a22eef57fb1af31c0029",
+    "unlinked_binary": "0x6060604052346100005760405160208061055d83398101604052515b600160a060020a038116151561003057610000565b60008054600160a060020a031916600160a060020a0383161790555b505b6105008061005d6000396000f300606060405236156100675763ffffffff60e060020a60003504166303b175db811461006c5780630af4187d146100a0578063224b5c72146100d157806326324eff1461010157806365da56031461012c5780636c6f31f214610150578063bf20f50214610180575b610000565b346100005761008e600160a060020a03600435811690602435166044356101a9565b60408051918252519081900360200190f35b346100005761008e600160a060020a036004358116906024351661025f565b60408051918252519081900360200190f35b34610000576100ed600160a060020a036004351660243561028f565b604080519115158252519081900360200190f35b346100005761008e600160a060020a0360043516610366565b60408051918252519081900360200190f35b34610000576100ed600435610378565b604080519115158252519081900360200190f35b34610000576100ed600160a060020a03600435166024356103f3565b604080519115158252519081900360200190f35b346100005761018d6104c5565b60408051600160a060020a039092168252519081900360200190f35b6000805460408051810183905280517f1dc2595b000000000000000000000000000000000000000000000000000000008152600160a060020a0387811660048301528681166024830152825185948594921692631dc2595b92604480830193919282900301818787803b156100005760325a03f1156100005750506040518051602090910151909350915050620186a08201840284901161024957610000565b620186a082810185020492505b50509392505050565b600160a060020a038083166000908152600160208181526040808420948616845293909101905220545b92915050565b600160a060020a0382166000908152600160205260408120816102b38533866101a9565b600160a060020a0333166000908152600184016020526040902054909150819010806102e0575081548190105b156102ea57610000565b81548190038255600160a060020a033381166000818152600185016020908152604091829020805486900390558554825189815291820186905281830152905191928816917f12e7b6d1129f0c3f7220b86811327fd6a28f796a2202d63580273f046d982d4f9181900360600190a3600192505b505092915050565b60016020526000908152604090205481565b600160a060020a033316600090815260016020526040812080548301838110156103a157610000565b80825560408051858152602081018390528151600160a060020a033316927f839739a3668f7238e9668f81cea9e3b427d87f4a8ed9a95f1bb51270dc82b742928290030190a2600192505b5050919050565b60006000600033600160a060020a031685600160a060020a0316141561041857610000565b5050600160a060020a0333811660009081526001602081815260408084209488168452918401905290205483018381101561045257610000565b600160a060020a033381166000818152600160208181526040808420958b1680855295909201815291819020859055805188815291820185905280517f01e608736b5a93796f6bfc17d3a4460b141d4f8e1c6cbf5afd368c99e147f6219281900390910190a3600192505b505092915050565b600054600160a060020a0316815600a165627a7a7230582018bce311bcdb65ad2e0c3b2d0fc23517253eb26b953aeb164667e52c8ee139040029",
     "events": {
-      "0xc0e8693a712ee49068f452bfc718b4b43b15252c5c6403e371d956bcd9c588c3": {
+      "0x839739a3668f7238e9668f81cea9e3b427d87f4a8ed9a95f1bb51270dc82b742": {
         "anonymous": false,
         "inputs": [
           {
             "indexed": true,
-            "name": "from",
-            "type": "address"
-          },
-          {
-            "indexed": true,
-            "name": "to",
+            "name": "producer",
             "type": "address"
           },
           {
             "indexed": false,
-            "name": "loss",
+            "name": "howMuch",
             "type": "uint256"
           },
           {
             "indexed": false,
-            "name": "throughput",
+            "name": "stock",
             "type": "uint256"
           }
         ],
-        "name": "LogLinkAdded",
+        "name": "LogEnergyProduced",
         "type": "event"
       },
-      "0x4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b": {
+      "0x01e608736b5a93796f6bfc17d3a4460b141d4f8e1c6cbf5afd368c99e147f621": {
         "anonymous": false,
         "inputs": [
           {
             "indexed": true,
-            "name": "key",
-            "type": "bytes32"
+            "name": "producer",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "howMuch",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "total",
+            "type": "uint256"
           }
         ],
-        "name": "OnConfirmationRequired",
+        "name": "LogConsumptionAllowed",
+        "type": "event"
+      },
+      "0x12e7b6d1129f0c3f7220b86811327fd6a28f796a2202d63580273f046d982d4f": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "producer",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "howMuch",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "adjusted",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "stock",
+            "type": "uint256"
+          }
+        ],
+        "name": "LogEnergyConsumed",
         "type": "event"
       }
     },
-    "updated_at": 1486866005338,
+    "updated_at": 1486866005325,
     "links": {},
-    "address": "0x8a7596eab3a36af7507ffd7c1bf386efd702ddba"
+    "address": "0x63fbb981296e668fb64c0bd14bf20fafd0e6435c"
   },
   "default": {
     "abi": [
       {
         "constant": true,
-        "inputs": [],
-        "name": "requiredCount",
+        "inputs": [
+          {
+            "name": "producer",
+            "type": "address"
+          },
+          {
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "name": "original",
+            "type": "uint256"
+          }
+        ],
+        "name": "adjust",
         "outputs": [
           {
-            "name": "",
+            "name": "adjusted",
             "type": "uint256"
           }
         ],
@@ -608,85 +702,19 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "constant": true,
         "inputs": [
           {
-            "name": "",
+            "name": "producer",
             "type": "address"
           },
           {
-            "name": "",
+            "name": "consumer",
             "type": "address"
           }
         ],
-        "name": "directedLinks",
+        "name": "getAllowance",
         "outputs": [
           {
-            "name": "loss",
+            "name": "allowance",
             "type": "uint256"
-          },
-          {
-            "name": "throughput",
-            "type": "uint256"
-          }
-        ],
-        "payable": false,
-        "type": "function"
-      },
-      {
-        "constant": true,
-        "inputs": [
-          {
-            "name": "from",
-            "type": "address"
-          },
-          {
-            "name": "to",
-            "type": "address"
-          }
-        ],
-        "name": "isYourLink",
-        "outputs": [
-          {
-            "name": "isIndeed",
-            "type": "bool"
-          }
-        ],
-        "payable": false,
-        "type": "function"
-      },
-      {
-        "constant": true,
-        "inputs": [
-          {
-            "name": "key",
-            "type": "bytes32"
-          },
-          {
-            "name": "user",
-            "type": "address"
-          }
-        ],
-        "name": "getConfirmationOf",
-        "outputs": [
-          {
-            "name": "confirmed",
-            "type": "bool"
-          }
-        ],
-        "payable": false,
-        "type": "function"
-      },
-      {
-        "constant": true,
-        "inputs": [
-          {
-            "name": "data",
-            "type": "bytes"
-          }
-        ],
-        "name": "calculateKey",
-        "outputs": [
-          {
-            "name": "key",
-            "type": "bytes32"
           }
         ],
         "payable": false,
@@ -696,23 +724,15 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "constant": false,
         "inputs": [
           {
-            "name": "from",
+            "name": "_producer",
             "type": "address"
           },
           {
-            "name": "to",
-            "type": "address"
-          },
-          {
-            "name": "loss",
-            "type": "uint256"
-          },
-          {
-            "name": "throughput",
+            "name": "howMuch",
             "type": "uint256"
           }
         ],
-        "name": "submitLink",
+        "name": "consume",
         "outputs": [
           {
             "name": "successful",
@@ -727,13 +747,13 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "inputs": [
           {
             "name": "",
-            "type": "bytes32"
+            "type": "address"
           }
         ],
-        "name": "confirmations",
+        "name": "producers",
         "outputs": [
           {
-            "name": "count",
+            "name": "stock",
             "type": "uint256"
           }
         ],
@@ -741,7 +761,65 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "type": "function"
       },
       {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "howMuch",
+            "type": "uint256"
+          }
+        ],
+        "name": "produce",
+        "outputs": [
+          {
+            "name": "successful",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "name": "howMuch",
+            "type": "uint256"
+          }
+        ],
+        "name": "allow",
+        "outputs": [
+          {
+            "name": "successful",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "constant": true,
         "inputs": [],
+        "name": "graph",
+        "outputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "payable": false,
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "name": "_graph",
+            "type": "address"
+          }
+        ],
         "payable": false,
         "type": "constructor"
       },
@@ -750,26 +828,21 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "inputs": [
           {
             "indexed": true,
-            "name": "from",
-            "type": "address"
-          },
-          {
-            "indexed": true,
-            "name": "to",
+            "name": "producer",
             "type": "address"
           },
           {
             "indexed": false,
-            "name": "loss",
+            "name": "howMuch",
             "type": "uint256"
           },
           {
             "indexed": false,
-            "name": "throughput",
+            "name": "stock",
             "type": "uint256"
           }
         ],
-        "name": "LogLinkAdded",
+        "name": "LogEnergyProduced",
         "type": "event"
       },
       {
@@ -777,58 +850,146 @@ var SolidityEvent = require("web3/lib/web3/event.js");
         "inputs": [
           {
             "indexed": true,
-            "name": "key",
-            "type": "bytes32"
+            "name": "producer",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "howMuch",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "total",
+            "type": "uint256"
           }
         ],
-        "name": "OnConfirmationRequired",
+        "name": "LogConsumptionAllowed",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "producer",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "howMuch",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "adjusted",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "stock",
+            "type": "uint256"
+          }
+        ],
+        "name": "LogEnergyConsumed",
         "type": "event"
       }
     ],
-    "unlinked_binary": "0x606060405234610000575b60025b60008190555b505b5b610512806100256000396000f300606060405236156100675763ffffffff60e060020a60003504166306c7dbb5811461006c5780631dc2595b1461008b5780633a07bfb3146100c3578063613bf18a146100f6578063a495b15314610126578063bfd58bdf1461018b578063ec95bfe7146101c4575b610000565b34610000576100796101e6565b60408051918252519081900360200190f35b34610000576100aa600160a060020a03600435811690602435166101ec565b6040805192835260208301919091528051918290030190f35b34610000576100e2600160a060020a0360043581169060243516610210565b604080519115158252519081900360200190f35b34610000576100e2600435600160a060020a036024351661024c565b604080519115158252519081900360200190f35b3461000057610079600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284375094965061027b95505050505050565b60408051918252519081900360200190f35b34610000576100e2600160a060020a03600435811690602435166044356064356102e2565b604080519115158252519081900360200190f35b346100005761007960043561045e565b60408051918252519081900360200190f35b60005481565b60026020908152600092835260408084209091529082529020805460019091015482565b600082600160a060020a031633600160a060020a03161480610243575081600160a060020a031633600160a060020a0316145b90505b92915050565b6000828152600160208181526040808420600160a060020a0386168552909201905290205460ff165b92915050565b6000816040518082805190602001908083835b602083106102ad5780518252601f19909201916020918201910161028e565b6001836020036101000a038019825116818451168082178552505050505050905001915050604051809103902090505b919050565b60008484600160a060020a03821615806103035750600160a060020a038116155b8061031557506103138282610210565b155b80610331575080600160a060020a031682600160a060020a0316145b1561033b57610000565b600060006103796000368080601f0160208091040260200160405190810160405280939291908181526020018383808284375061027b945050505050565b915061038482610470565b90506000548110156103ca5780600114156103c55760405182907f4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b90600090a25b610450565b6040805180820182528881526020808201898152600160a060020a03808e16600081815260028552868120928f1680825292855286902094518555915160019094019390935583518b81529182018a90528351929390927fc0e8693a712ee49068f452bfc718b4b43b15252c5c6403e371d956bcd9c588c39281900390910190a3600194505b5b50505b5050949350505050565b60016020526000908152604090205481565b6000818152600160208181526040808420600160a060020a0333168552909201905281205460ff16156104a257610000565b506000818152600160208181526040808420600160a060020a03331685528084018352908420805460ff19168417905592849052819052815401908190555b9190505600a165627a7a723058203e62d50d721e138853bc64940fa01f04133f81351760dca0a22eef57fb1af31c0029",
+    "unlinked_binary": "0x6060604052346100005760405160208061055d83398101604052515b600160a060020a038116151561003057610000565b60008054600160a060020a031916600160a060020a0383161790555b505b6105008061005d6000396000f300606060405236156100675763ffffffff60e060020a60003504166303b175db811461006c5780630af4187d146100a0578063224b5c72146100d157806326324eff1461010157806365da56031461012c5780636c6f31f214610150578063bf20f50214610180575b610000565b346100005761008e600160a060020a03600435811690602435166044356101a9565b60408051918252519081900360200190f35b346100005761008e600160a060020a036004358116906024351661025f565b60408051918252519081900360200190f35b34610000576100ed600160a060020a036004351660243561028f565b604080519115158252519081900360200190f35b346100005761008e600160a060020a0360043516610366565b60408051918252519081900360200190f35b34610000576100ed600435610378565b604080519115158252519081900360200190f35b34610000576100ed600160a060020a03600435166024356103f3565b604080519115158252519081900360200190f35b346100005761018d6104c5565b60408051600160a060020a039092168252519081900360200190f35b6000805460408051810183905280517f1dc2595b000000000000000000000000000000000000000000000000000000008152600160a060020a0387811660048301528681166024830152825185948594921692631dc2595b92604480830193919282900301818787803b156100005760325a03f1156100005750506040518051602090910151909350915050620186a08201840284901161024957610000565b620186a082810185020492505b50509392505050565b600160a060020a038083166000908152600160208181526040808420948616845293909101905220545b92915050565b600160a060020a0382166000908152600160205260408120816102b38533866101a9565b600160a060020a0333166000908152600184016020526040902054909150819010806102e0575081548190105b156102ea57610000565b81548190038255600160a060020a033381166000818152600185016020908152604091829020805486900390558554825189815291820186905281830152905191928816917f12e7b6d1129f0c3f7220b86811327fd6a28f796a2202d63580273f046d982d4f9181900360600190a3600192505b505092915050565b60016020526000908152604090205481565b600160a060020a033316600090815260016020526040812080548301838110156103a157610000565b80825560408051858152602081018390528151600160a060020a033316927f839739a3668f7238e9668f81cea9e3b427d87f4a8ed9a95f1bb51270dc82b742928290030190a2600192505b5050919050565b60006000600033600160a060020a031685600160a060020a0316141561041857610000565b5050600160a060020a0333811660009081526001602081815260408084209488168452918401905290205483018381101561045257610000565b600160a060020a033381166000818152600160208181526040808420958b1680855295909201815291819020859055805188815291820185905280517f01e608736b5a93796f6bfc17d3a4460b141d4f8e1c6cbf5afd368c99e147f6219281900390910190a3600192505b505092915050565b600054600160a060020a0316815600a165627a7a7230582018bce311bcdb65ad2e0c3b2d0fc23517253eb26b953aeb164667e52c8ee139040029",
     "events": {
-      "0xc0e8693a712ee49068f452bfc718b4b43b15252c5c6403e371d956bcd9c588c3": {
+      "0x839739a3668f7238e9668f81cea9e3b427d87f4a8ed9a95f1bb51270dc82b742": {
         "anonymous": false,
         "inputs": [
           {
             "indexed": true,
-            "name": "from",
-            "type": "address"
-          },
-          {
-            "indexed": true,
-            "name": "to",
+            "name": "producer",
             "type": "address"
           },
           {
             "indexed": false,
-            "name": "loss",
+            "name": "howMuch",
             "type": "uint256"
           },
           {
             "indexed": false,
-            "name": "throughput",
+            "name": "stock",
             "type": "uint256"
           }
         ],
-        "name": "LogLinkAdded",
+        "name": "LogEnergyProduced",
         "type": "event"
       },
-      "0x4963a972da476bee0ffe33a2b3eb0bfcb1aa1d75717e3ff5103b40e356055e3b": {
+      "0x01e608736b5a93796f6bfc17d3a4460b141d4f8e1c6cbf5afd368c99e147f621": {
         "anonymous": false,
         "inputs": [
           {
             "indexed": true,
-            "name": "key",
-            "type": "bytes32"
+            "name": "producer",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "howMuch",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "total",
+            "type": "uint256"
           }
         ],
-        "name": "OnConfirmationRequired",
+        "name": "LogConsumptionAllowed",
+        "type": "event"
+      },
+      "0x12e7b6d1129f0c3f7220b86811327fd6a28f796a2202d63580273f046d982d4f": {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "producer",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "consumer",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "howMuch",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "adjusted",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "stock",
+            "type": "uint256"
+          }
+        ],
+        "name": "LogEnergyConsumed",
         "type": "event"
       }
     },
-    "updated_at": 1486866073181,
-    "links": {}
+    "updated_at": 1486866073168
   }
 };
 
@@ -913,7 +1074,7 @@ var SolidityEvent = require("web3/lib/web3/event.js");
     Contract.links[name] = address;
   };
 
-  Contract.contract_name   = Contract.prototype.contract_name   = "Graph";
+  Contract.contract_name   = Contract.prototype.contract_name   = "EnergyToken";
   Contract.generated_with  = Contract.prototype.generated_with  = "3.2.0";
 
   // Allow people to opt-in to breaking changes now.
@@ -953,6 +1114,6 @@ var SolidityEvent = require("web3/lib/web3/event.js");
   } else {
     // There will only be one version of this contract in the browser,
     // and we can use that.
-    window.Graph = Contract;
+    window.EnergyToken = Contract;
   }
 })();
