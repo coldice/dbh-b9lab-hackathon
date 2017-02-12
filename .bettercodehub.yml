@@ -5,6 +5,7 @@ exclude:
 - /truffle/etherscan/.*
 - /www/node_modules/.*
 - /www/app/js/app.js
+- /www/app/js/sigmajs/.*
 component_depth: 2
 languages:
 - solidity

@@ -32,6 +32,7 @@ function loadActions() {
             .then(web3.eth.getTransactionReceiptMined)
             .then(receipt => {
                 $("#lbl_processing").hide();
+                console.log(web3.sha3(receipt.logs[0].data));
             })
             .catch(error => {
                 console.error(error);
