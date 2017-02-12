@@ -27,8 +27,7 @@ function initGraph() {
                 return d.data.color; 
             }
         }, 
-        labelStyle: {fill: 'red'},
-        stickyDrag: true
+        labelStyle: {fill: 'red'}
     }, true);
 }
 
@@ -84,7 +83,7 @@ function addNode(address, nodeName, position, nodeType) {
 
 function addConnection(from, to, throughput, loss) {
     console.log("add connection from " + from + " to " + to);
-    G.addEdge(from, to, {weight: throughput, loss: loss, throughput: throughput});
+    G.addEdge(from, to, {weight: throughput, loss: loss, throughput: throughput, linkDistance: 100});
 }
 
 // some helpers
