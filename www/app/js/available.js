@@ -49,6 +49,8 @@ function populateEndpointRow(trObject, endpointInfo) {
     trObject.find("td.pointType").html(endpointInfo.pointType); 
     trObject.find("td.location").html(endpointInfo.location);
     trObject.find("button.add").attr("data-param", "address=" + endpointInfo.who);
+
+    setupAutoButtons(trObject);
 }
 
 /**

@@ -1,7 +1,6 @@
 function autoSetup(obj) {
     setupAutoButtons(obj);
     setupAutoForms(obj);
-    console.log("auto");
 }
 
 function setupAutoButtons(obj) {
@@ -12,7 +11,6 @@ function setupAutoButtons(obj) {
 
 function addButtonAction(btn) {
     action = btn.attr("data-action");
-
     if(action=="get") {
         btn.click(function() {
             performGet($(this));

@@ -3,6 +3,7 @@ function updateUi() {
         .then(account => {
             $("#lbl_account").html(account);
             updateSelectUI(); // must be called after we set the textfield
+            autoSetup($(document));
         })
         .catch(error => {
             console.error(error);
@@ -21,14 +22,12 @@ function loadActions() {
         return web3.eth.getFirstAccountPromise()
             .then(account => {
                 $("#lbl_processing").show();
-                if($("#radio_to").is(":checked")) {
-                    return graph.submitLink({
-                            from: fromAddress,
-                            to: toAddress,
-                            loss: pickedLoss,
-                            throughput: pickedThroughput
-                        }, account);
-                }
+                return graph.submitLink({
+                        from: fromAddress,
+                        to: toAddress,
+                        loss: pickedLoss,
+                        throughput: pickedThroughput
+                    }, account);
             })
             .then(web3.eth.getTransactionReceiptMined)
             .then(receipt => {

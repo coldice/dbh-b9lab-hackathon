@@ -35,12 +35,14 @@ function createEmptyConnectionRow() {
 
     var tdAction = $("<td/>").addClass("text-center").appendTo(tr);
 
+/*
     var buttonConfirm = $("<button/>").html("Confirm").addClass("btn btn-primary confirm").attr({
             "type": "button",
             "data-type": "autoButton",
             "data-action": "get",
             "data-target": "confirm.html"
         }).appendTo(tdAction);
+*/
     var buttonRemove = $("<button/>").html("Remove").addClass("btn btn-primary remove").attr({
             "type": "button",
             "data-type": "autoButton",
