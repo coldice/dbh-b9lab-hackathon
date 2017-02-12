@@ -4,7 +4,10 @@ import "WithConfirmation.sol";
 
 contract Graph is WithConfirmation {
     struct Link {
-        uint loss; // The unit is such that 1% is encoded as 1000
+        // The unit is such that 1% is encoded as 1000
+        // for ease of calculation, this value has to be entered so that 100 consumed 
+        // is for 101 produced.
+        uint loss;
         uint throughput; // The unit is microWatt.
     }
     
