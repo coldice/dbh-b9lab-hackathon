@@ -30,8 +30,8 @@ function createEmptyConnectionRow() {
     var tdTypeFrom = $("<td/>").addClass("typeFrom text-center").appendTo(tr);
     var tdNameTo = $("<td/>").addClass("nameTo text-center").appendTo(tr);
     var tdTypeTo = $("<td/>").addClass("typeTo text-center").appendTo(tr);
-    var tdLoss = $("<td/>").addClass("Loss text-center").appendTo(tr);
-    var tdThroughput = $("<td/>").addClass("Throughput text-center-center").appendTo(tr);
+    var tdLoss = $("<td/>").addClass("loss text-center").appendTo(tr);
+    var tdThroughput = $("<td/>").addClass("throughput text-center-center").appendTo(tr);
 
     var tdAction = $("<td/>").addClass("text-center").appendTo(tr);
 
@@ -77,8 +77,8 @@ function populateConnectionRow(trObject, connectionInfo) {
     trObject.find("td.typeFrom").html(connectionInfo.typeFrom);
     trObject.find("td.nameTo").html(connectionInfo.nameTo);
     trObject.find("td.typeTo").html(connectionInfo.typeTo);
-    trObject.find("td.Loss").html(connectionInfo.loss);
-    trObject.find("td.Throughput").html(connectionInfo.throughput);
+    trObject.find("td.loss").html(connectionInfo.loss);
+    trObject.find("td.throughput").html(connectionInfo.throughput);
     // TODO Look again at what to put
     trObject.find("button.confirm").attr("data-param", "address=" + connectionInfo.from);
     trObject.find("button.remove").attr("data-param", "address=" + connectionInfo.from);

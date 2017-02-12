@@ -21,7 +21,7 @@ function createEmptyEndpointRow() {
     var tdPointType = $("<td/>").addClass("pointType").appendTo(tr);
     var tdLocation = $("<td/>").addClass("location").appendTo(tr);
     var tdAction = $("<td/>").addClass("text-center").appendTo(tr);
-    var buttonAdd = $("<button/>").html("Add").addClass("btn btn-primary add").attr({
+    var buttonAdd = $("<button/>").html("Link It Up").addClass("btn btn-primary add").attr({
             "type": "button",
             "data-type": "autoButton",
             "data-action": "get",
