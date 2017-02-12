@@ -17,6 +17,8 @@ function updateUi() {
 function createEmptyEndpointRow() {
     var tr = $("<tr/>").addClass("data-row");
     var thIndex = $("<th/>").addClass("pointIndex text-center").attr("scope", "row").appendTo(tr);
+    var tdBlockie = $("<td/>").addClass("blockie").appendTo(tr);
+    var imgBlockie = $("<img/>").addClass("blockieIcon").appendTo(tdBlockie);
     var tdPointName = $("<td/>").addClass("pointName").appendTo(tr);
     var tdPointType = $("<td/>").addClass("pointType text-center").appendTo(tr);
     var tdLocation = $("<td/>").addClass("location").appendTo(tr);
@@ -46,6 +48,11 @@ function populateEndpointRow(trObject, endpointInfo) {
     if(typeof(endpointInfo.pointIndex) != "undefined") {
         trObject.find("th.pointIndex").html(endpointInfo.pointIndex);
     }
+    trObject.find("td.blockie").attr('title', endpointInfo.who);
+    trObject.find("img.blockieIcon")
+        .css(
+            'background-image',
+            'url(' + blockies.create({ seed:endpointInfo.who, size: 8, scale: 16 }).toDataURL() + ')');
     trObject.find("td.pointName").html(endpointInfo.name);
     trObject.find("td.pointType").html(registry.pointTypes[endpointInfo.pointType]); 
     trObject.find("td.location").html(endpointInfo.location);
