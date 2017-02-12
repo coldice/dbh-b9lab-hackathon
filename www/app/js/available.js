@@ -16,9 +16,9 @@ function updateUi() {
  */
 function createEmptyEndpointRow() {
     var tr = $("<tr/>").addClass("data-row");
-    var thIndex = $("<th/>").addClass("index").attr("scope", "row").appendTo(tr);
+    var thIndex = $("<th/>").addClass("pointIndex text-center").attr("scope", "row").appendTo(tr);
     var tdPointName = $("<td/>").addClass("pointName").appendTo(tr);
-    var tdPointType = $("<td/>").addClass("pointType").appendTo(tr);
+    var tdPointType = $("<td/>").addClass("pointType text-center").appendTo(tr);
     var tdLocation = $("<td/>").addClass("location").appendTo(tr);
     var tdAction = $("<td/>").addClass("text-center").appendTo(tr);
     var buttonAdd = $("<button/>").html("Link It Up").addClass("btn btn-primary add").attr({
@@ -41,12 +41,13 @@ function createEmptyEndpointRow() {
  * }
  */
 function populateEndpointRow(trObject, endpointInfo) {
-    trObject.attr("data-address", endpointInfo.who); 
+    trObject.attr("data-address", endpointInfo.who);
+    console.log(endpointInfo);
     if(typeof(endpointInfo.pointIndex) != "undefined") {
-        trObject.find("td.index").html(endpointInfo.pointIndex);
+        trObject.find("th.pointIndex").html(endpointInfo.pointIndex);
     }
     trObject.find("td.pointName").html(endpointInfo.name);
-    trObject.find("td.pointType").html(endpointInfo.pointType); 
+    trObject.find("td.pointType").html(registry.pointTypes[endpointInfo.pointType]); 
     trObject.find("td.location").html(endpointInfo.location);
     trObject.find("button.add").attr("data-param", "address=" + endpointInfo.who);
 
