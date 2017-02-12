@@ -61,6 +61,18 @@ html * {
     margin: auto;
 }
 
+.btn-primary {
+    background: #4CAF50;
+}
+
+.btn-primary:hover {
+    background: #388E3C;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #C8E6C9;
+}
+
 
 
 /*------------- Sticky footer styles------------- */
