@@ -43,23 +43,12 @@ function addNode(address, nodeName, position, nodeType) {
         console.log("update node " + address);
         existingNode.data = {address:address, nodeName:nodeName, position:position, nodeType:nodeType};
     } else {
-
-    // jsnx.forEach(G, function(n) {
-    //      if(n==address) {
-    //         // update
-    //         n
-    //         console.log("exists!");
-    //         console.log(n)
-    //         console.log(address);
-    //         return;
-    //      }
-    // });
         G.addNode(address, {data: {address:address, nodeName:nodeName, position:position, nodeType:nodeType}});
     }
 }
 
-function addConnection() {
-
+function addConnection(from, to, capacity, loss) {
+    G.addEdge(from, to, {weight: capacity, loss: loss, capacity: capacity});
 }
 
 window.addEventListener(
