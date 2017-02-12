@@ -32,19 +32,11 @@ function initGraph() {
 }
 
 function setupListener() {
-    registry.listenToUpdates((error, infoChanged) => {
-        console.log(infoChanged);
-        if (error) {
-            console.error(error);
-        } else {
-            nodeAddress = infoChanged.args.who;
-            nodeName = infoChanged.args.name;
-            position = infoChanged.args.location; //JSON.parse(infoChanged.args.location);
-            nodeType = infoChanged.args.pointType;
-            addNode(nodeAddress, nodeName, position, nodeType);
-        }
-    });
+    addGraphListener();
+    addRegistryListener();
+}
 
+function addGraphListener() {
     graph.listenToUpdates(
         (error, confirmationRequired) => {
             if (error) {
@@ -65,6 +57,21 @@ function setupListener() {
             }
         }
     );
+}
+
+function addRegistryListener() {
+    registry.listenToUpdates((error, infoChanged) => {
+        console.log(infoChanged);
+        if (error) {
+            console.error(error);
+        } else {
+            nodeAddress = infoChanged.args.who;
+            nodeName = infoChanged.args.name;
+            position = infoChanged.args.location; //JSON.parse(infoChanged.args.location);
+            nodeType = infoChanged.args.pointType;
+            addNode(nodeAddress, nodeName, position, nodeType);
+        }
+    });
 }
 
 function addNode(address, nodeName, position, nodeType) {
