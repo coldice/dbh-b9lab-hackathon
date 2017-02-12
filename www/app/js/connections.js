@@ -28,10 +28,14 @@ function createEmptyConnectionRow() {
     var thIndex = $("<th/>").addClass("linkIndex text-center").attr("scope", "row").appendTo(tr);
     var tdNameFrom = $("<td/>").addClass("nameFrom text-center").appendTo(tr);
     var tdTypeFrom = $("<td/>").addClass("typeFrom text-center").appendTo(tr);
-    var tdNameTo = $("<td/>").addClass("nameTo text-center").appendTo(tr);
-    var tdTypeTo = $("<td/>").addClass("typeTo text-center").appendTo(tr);
+    var tdBlockieFrom = $("<td/>").addClass("blockieFrom text-center").appendTo(tr);
+    var imgBlockieFrom = $("<img/>").addClass("blockieIcon blockieIconFrom").appendTo(tdBlockieFrom);
     var tdLoss = $("<td/>").addClass("loss text-center").appendTo(tr);
     var tdThroughput = $("<td/>").addClass("throughput text-center-center").appendTo(tr);
+    var tdBlockieTo = $("<td/>").addClass("blockieTo text-center").appendTo(tr);
+    var imgBlockieTo = $("<img/>").addClass("blockieIcon blockieIconTo").appendTo(tdBlockieTo);
+    var tdTypeTo = $("<td/>").addClass("typeTo text-center").appendTo(tr);
+    var tdNameTo = $("<td/>").addClass("nameTo text-center").appendTo(tr);
 
     var tdAction = $("<td/>").addClass("text-center").appendTo(tr);
 
@@ -73,10 +77,20 @@ function populateConnectionRow(trObject, connectionInfo) {
     if(typeof(connectionInfo.linkIndex) != "undefined") {
         trObject.find("th.linkIndex").html(connectionInfo.linkIndex);
     }
+    trObject.find("td.blockieFrom").attr('title', connectionInfo.from);
+    trObject.find("img.blockieIconFrom")
+        .css(
+            'background-image',
+            'url(' + blockies.create({ seed:connectionInfo.from, size: 8, scale: 16 }).toDataURL() + ')');
     trObject.find("td.nameFrom").html(connectionInfo.nameFrom);
-    trObject.find("td.typeFrom").html(connectionInfo.typeFrom);
+    trObject.find("td.typeFrom").html(registry.pointTypes[connectionInfo.typeFrom]);
+    trObject.find("td.blockieTo").attr('title', connectionInfo.to);
+    trObject.find("img.blockieIconTo")
+        .css(
+            'background-image',
+            'url(' + blockies.create({ seed:connectionInfo.to, size: 8, scale: 16 }).toDataURL() + ')');
     trObject.find("td.nameTo").html(connectionInfo.nameTo);
-    trObject.find("td.typeTo").html(connectionInfo.typeTo);
+    trObject.find("td.typeTo").html(registry.pointTypes[connectionInfo.typeTo]);
     trObject.find("td.loss").html(connectionInfo.loss);
     trObject.find("td.throughput").html(connectionInfo.throughput);
     // TODO Look again at what to put
