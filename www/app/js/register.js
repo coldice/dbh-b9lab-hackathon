@@ -21,19 +21,13 @@ function loadActions() {
         var pickedPointType = $("#select_point_type").val();
         var pickedLatitude = $("#txt_latitude").val();
         var pickedLongitude = $("#txt_longitude").val();
-        console.log(pickedLatitude, pickedLongitude);
         $("#lbl_error").hide();
         return isNameTaken(pickedName)
             .then(web3.eth.getFirstAccountPromise)
             .then(account => {
                 $("#lbl_processing").show();
-                return registry.setInfoTo({
-                        name: pickedName,
-                        pointType: pickedPointType,
-                        location: JSON.stringify({
-                            lat: pickedLatitude,
-                            lng: pickedLongitude
-                        })
+                return registry.setInfoTo({name: pickedName,pointType: pickedPointType,
+                        location: JSON.stringify({ lat: pickedLatitude, lng: pickedLongitude })
                     }, account);
             })
             .then(web3.eth.getTransactionReceiptMined)
@@ -43,20 +37,24 @@ function loadActions() {
                 $("#lbl_pointType").html(pickedPointType);
             })
             .catch(error => {
-                console.error(error);
-                $("#lbl_processing").hide();
-                var errorMessage = "";
-                if (error == "No account found") {
-                    errorMessage = "There is no account";
-                } else if(error == "Name already taken") {
-                    errorMessage = "Name already taken by another: " + pickedName;
-                } else {
-                    errorMessage = "Failed to set the name";
-                }
-                $("#lbl_error").html(errorMessage).show();
-                // Did you check that the name is taken or not?
+                processLoadError(error, pickedName);
             });
     });
+}
+
+function processLoadError(error, pickedName) {
+    console.error(error);
+    $("#lbl_processing").hide();
+    var errorMessage = "";
+    if (error == "No account found") {
+        errorMessage = "There is no account";
+    } else if(error == "Name already taken") {
+        errorMessage = "Name already taken by another: " + pickedName;
+    } else {
+        errorMessage = "Failed to set the name";
+    }
+    $("#lbl_error").html(errorMessage).show();
+    // Did you check that the name is taken or not?
 }
 
 function updateUi() {
