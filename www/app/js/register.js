@@ -19,7 +19,9 @@ function loadActions() {
     $("#btn_submit_register").click(function() {
         var pickedName = $("#txt_name").val();
         var pickedPointType = $("#select_point_type").val();
-        var pickedLocation = $("#txt_location").val();
+        var pickedLatitude = $("#txt_latitude").val();
+        var pickedLongitude = $("#txt_longitude").val();
+        console.log(pickedLatitude, pickedLongitude);
         $("#lbl_error").hide();
         return isNameTaken(pickedName)
             .then(web3.eth.getFirstAccountPromise)
@@ -28,7 +30,10 @@ function loadActions() {
                 return registry.setInfoTo({
                         name: pickedName,
                         pointType: pickedPointType,
-                        location: pickedLocation
+                        location: JSON.stringify({
+                            lat: pickedLatitude,
+                            lng: pickedLongitude
+                        })
                     }, account);
             })
             .then(web3.eth.getTransactionReceiptMined)
@@ -36,7 +41,6 @@ function loadActions() {
                 $("#lbl_processing").hide();
                 $("#lbl_name").html(pickedName);
                 $("#lbl_pointType").html(pickedPointType);
-                $("#lbl_location").html(pickedLocation);
             })
             .catch(error => {
                 console.error(error);
@@ -72,7 +76,14 @@ function updateUi() {
             $("#lbl_account").html(info.address);
             $("#txt_name").val(info.name);
             $("#select_point_type").val(info.pointType);
-            $("#txt_location").val(info.location);
+            try {
+                var parsedLocation = JSON.parse(info.location);
+                $("#txt_latitude").val(parsedLocation.lat);
+                $("#txt_longitude").val(parsedLocation.lng);
+            } catch(error) {
+                console.error("Failed to parse", info.location)
+            }
+            
         })
         .catch(error => {
             console.error(error);
