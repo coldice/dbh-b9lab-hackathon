@@ -34,13 +34,17 @@ function loadActions() {
                 console.log(web3.sha3(receipt.logs[0].args));
             })
             .catch(error => {
-                console.error(error);
-                $("#lbl_processing").hide();
-                $("#lbl_error").html(error).show();
+                handleLoadError(error);
                 // Did you check that the name is taken or not?
             });
     });
     setupTabHandler();
+}
+
+function handleLoadError(error) {
+    console.error(error);
+    $("#lbl_processing").hide();
+    $("#lbl_error").html(error).show();
 }
 
 function setupTabHandler() {
