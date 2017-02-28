@@ -12,6 +12,8 @@ function updateUi() {
                 if (error) {
                     console.error(error);
                 } else {
+                    $("#spinner-location").remove();
+                    spinner = null;
                     findOrCreateAndPopulateConnectionRow(tbodyObject, linkAdded.args);
                 }
             }
