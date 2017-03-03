@@ -71,17 +71,7 @@ function updateUi() {
         })
         .then(registry.getInfoOf)
         .then(info => {
-            $("#lbl_account").html(info.address);
-            $("#txt_name").val(info.name);
-            $("#select_point_type").val(info.pointType);
-            try {
-                var parsedLocation = JSON.parse(info.location);
-                $("#txt_latitude").val(parsedLocation.lat);
-                $("#txt_longitude").val(parsedLocation.lng);
-            } catch(error) {
-                console.error("Failed to parse", info.location)
-            }
-            
+            updateUiInfo(info);            
         })
         .catch(error => {
             console.error(error);
@@ -93,6 +83,19 @@ function updateUi() {
             }
             $("#lbl_error").html(errorMessage).show();
         })
+}
+
+function updateUiInfo(info) {
+    $("#lbl_account").html(info.address);
+    $("#txt_name").val(info.name);
+    $("#select_point_type").val(info.pointType);
+    try {
+        var parsedLocation = JSON.parse(info.location);
+        $("#txt_latitude").val(parsedLocation.lat);
+        $("#txt_longitude").val(parsedLocation.lng);
+    } catch(error) {
+        console.error("Failed to parse", info.location)
+    }
 }
 //lbl_account
 

@@ -7,6 +7,7 @@ exclude:
 - /www/app/js/app.js
 - /www/app/js/sigmajs/.*
 - /www/app/lib/.*
+- /www/app/js/blockies/.*
 component_depth: 2
 languages:
 - solidity
