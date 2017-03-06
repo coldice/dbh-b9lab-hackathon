@@ -28,6 +28,8 @@
     <script type="text/javascript" src="js/connections.js"></script>
     <script type="text/javascript" src="js/datatools.js"></script>
     <script type="text/javascript" src="js/blockies/blockies.js"></script>
+    <script type="text/javascript" src="js/spin.min.js"></script>
+    <script type="text/javascript"src="js/spin-enertiq.js"></script>
 </head>
 
 <body>
@@ -39,6 +41,9 @@
         <div class="card">
             <div class="card-block">
                 <h1>List of Links</h1>
+                <div class="alert alert-info" role="alert">
+                    This demo requires you to be connected to the Ropsten testnet. If you are unsure how to do this, we offer a free introductory <a href="https://academy.b9lab.com/courses/B9lab/X16-0/2016/about" target="_blank">Ethereum 101 Course</a> which includes details on how to do this.
+                </div>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -75,6 +80,7 @@
                         </tr-->
                     </tbody>
                 </table>
+                <div id="spinner-location" style="padding: 30px 0;"></div>
             </div>
         </div>
         
@@ -94,6 +100,9 @@
     <script>
         $("#header").load("header.html");
         $("#footer").load("footer.html");
+        
+        //spinning loader
+        new Spinner(enertiq).spin(document.getElementById('spinner-location'));
     </script>
        
 </body>

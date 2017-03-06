@@ -86,6 +86,8 @@ function addRegistryListener() {
 }
 
 function addNode(address, nodeName, position, nodeType) {
+    $("#network_map_container .spinner").remove();
+    spinner = null;
     console.log("add node:"+address+" - "+nodeName+position+" - "+nodeType);
 
     existingNode = G.node.get(address);

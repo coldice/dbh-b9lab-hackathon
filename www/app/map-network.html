@@ -24,6 +24,8 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script type="text/javascript" src="lib/js/jsnetworkx.js"></script>
     <script type="text/javascript" src="js/mapNetwork.js"></script>
+    <script type="text/javascript" src="js/spin.min.js"></script>
+    <script type="text/javascript" src="js/spin-enertiq.js"></script>
 </head>
 
 <body>
@@ -33,6 +35,9 @@
     <div class="container-fluid bkg-lightgreen">
         <div class="container">
             <h1>Map Network</h1>
+            <div class="alert alert-info" role="alert">
+                This demo requires you to be connected to the Ropsten testnet. If you are unsure how to do this, we ofer a free introductory <a href="https://academy.b9lab.com/courses/B9lab/X16-0/2016/about" target="_blank">Ethereum 101 Course</a> which includes details on how to do this.
+            </div>
             <div id="network_map_container" style="height:85vh; background-color: #C8E6C9;"></div>
         </div>
     </div>
@@ -51,8 +56,11 @@
     <script>
         $("#header").load("header.html");
         $("#footer").load("footer.html");
+        
+        //spinning loader
+        new Spinner(enertiq).spin(document.getElementById('network_map_container'));
+
     </script>
-            
             
 </body>
 
