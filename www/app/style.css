@@ -7,6 +7,14 @@ h1, h2, h3, h4, h5, h6 {
     padding-bottom: 20px;
 }
 
+p {
+    font-size: 20px;
+}
+
+.text-green5 {
+    color: #1B5E20;
+}
+
 .main-content {
     padding-top: 100px;
 }
@@ -29,7 +37,8 @@ h1, h2, h3, h4, h5, h6 {
 .footer-styling{
     height: 60px;
     background: #C8E6C9 !important;
-    color: #4CAF50;
+    color: #1B5E20;
+    font-weight: bold;
 }
 
 .header-styling {
@@ -38,7 +47,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .header-styling a {
-    color: #4CAF50 !important;
+    color: #1B5E20 !important;
+    font-weight: bold;
 }
 
 .navbar-brand a img {
@@ -52,6 +62,26 @@ h1, h2, h3, h4, h5, h6 {
 .bkg-lightgreen {
     padding: 100px 0;
     background: #C8E6C9;
+}
+
+.bkg-green1 {
+    background: #C8E6C9;
+}
+
+.bkg-green2 {
+    background: #81C784;
+}
+
+.bkg-green3 {
+    background: #4CAF50;
+}
+
+.bkg-green4 {
+    background: #388E3C;
+}
+
+.bkg-green5 {
+    background: #1B5E20;
 }
 
 .bkg-white {
@@ -76,6 +106,16 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-primary:hover {
     background: #388E3C;
+}
+
+.btn-yellow {
+    background: #FFEB3B;
+    color: #1B5E20;
+}
+
+.btn-yellow:hover {
+    background: #FBC02D;
+    color: #1B5E20;
 }
 
 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
@@ -149,4 +189,10 @@ img.blockieIcon {
     background-repeat: no-repeat;
     border-radius: 10%;
     box-shadow: inset rgba(255, 255, 255, 0.6) 0 2px 2px, inset rgba(0, 0, 0, 0.3) 0 -2px 6px;
+}
+
+@media only screen and (max-width: 768px) {
+    p, .btn {
+        font-size: 12px;
+    }
 }
